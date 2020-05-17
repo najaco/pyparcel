@@ -1,5 +1,7 @@
 import unittest
-import comp
+from typing import Dict
+import PyParcel
+
 class MyTestCase(unittest.TestCase):
     class ExampleClassA:
         def __init__(self, a: int, b: float, c: str):
@@ -15,7 +17,7 @@ class MyTestCase(unittest.TestCase):
             }
 
     def test_pack(self):
-        pass
+        assert 1 == 1
 
 
 
