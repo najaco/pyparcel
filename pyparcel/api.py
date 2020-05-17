@@ -84,10 +84,10 @@ def _unpack(data: bytes, obj: T) -> (T, bytes):
         return unpack_dict[type(obj)](obj, data)
     else:
         for v in vars(obj):
-            (result, data) = unpack(data, obj.__getattribute__(v))
+            (result, data) = _unpack(data, obj.__getattribute__(v))
             obj.__dict__[v] = result
     return obj, data
 
 
-def unpack(data: bytes, obj: T) -> (T, bytes):
+def unpack(data: bytes, obj: T) -> T:
     return _unpack(data, obj)[0]
