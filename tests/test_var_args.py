@@ -26,5 +26,11 @@ class MyTestCase(unittest.TestCase):
         for i in DATA:
             self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), *[int()] * len(i)))
 
+    def test_diff_pack_unpack(self):
+        data = pyparcel.pack(1, 2, 3.5)
+        self.assertEqual((1, 2, 3.5), pyparcel.unpack(data, int(), int(), float()))
+
+
+
 if __name__ == "__main__":
     unittest.main()
