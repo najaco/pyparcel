@@ -58,19 +58,27 @@ unpack_dict = {
     list: (lambda obj, _: raise_(NotImplementedError)),
     set: (lambda obj, _: raise_(NotImplementedError)),
     dict: (lambda obj, _: raise_(NotImplementedError)),
-    tuple: (lambda obj, _: raise_(NotImplementedError)),
+    tuple: (lambda obj, data: unpack_tuple(data, obj)),
 }
 
 
-def unpack_string(data: bytes):
+def unpack_string(data: bytes) -> (str, bytes):
     result, data = unpack_bytes(data)
     return result.decode(ENCODING), data
 
 
-def unpack_bytes(data: bytes):
+def unpack_bytes(data: bytes) -> (bytes, bytes):
     length = struct.unpack("q", data[: size_dict["str_length"]])[0]
     data = data[size_dict["str_length"] :]
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
+
+
+def unpack_tuple(data: bytes, t: Tuple[Any]) -> (Tuple[Any], bytes):
+    unpacked_objs = []
+    for obj in t:
+        (result, data) = _unpack(data, obj)
+        unpacked_objs.append(result)
+    return tuple(unpacked_objs), data
 
 
 def pack(*objs) -> bytes:
