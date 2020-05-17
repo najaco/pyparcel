@@ -33,6 +33,10 @@ class MyTestCase(unittest.TestCase):
         for i in DATA:
             assert i == pyparcel.unpack(pyparcel.pack(i), int())
 
+    def test_pack_unpack_8(self):
+        for i in DATA:
+            assert i == pyparcel.unpack(pyparcel.pack(i, 8), int(), 8)
+
 
 if __name__ == "__main__":
     unittest.main()
