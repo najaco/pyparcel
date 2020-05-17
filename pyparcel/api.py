@@ -17,7 +17,7 @@ size_dict = {
     float: 4,
     "str_length": 8,
 }
-# find a way to set default size for int
+
 pack_dict = {
     int: (
         lambda obj: struct.pack("i", obj)
@@ -73,7 +73,8 @@ def unpack_bytes(data: bytes):
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
 
 
-def pack(obj: T) -> bytes:
+def pack(obj: T, int_size: int = 4) -> bytes:
+    size_dict['int'] = int_size
     return pack_dict.get(
         type(obj), lambda o: b"".join([pack(o.__getattribute__(x)) for x in vars(o)])
     )(obj)
@@ -89,5 +90,6 @@ def _unpack(data: bytes, obj: T) -> (T, bytes):
     return obj, data
 
 
-def unpack(data: bytes, obj: T) -> T:
+def unpack(data: bytes, obj: T, int_size:int = 4) -> T:
+    size_dict["int"] = int_size
     return _unpack(data, obj)[0]
