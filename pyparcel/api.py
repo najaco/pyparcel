@@ -38,19 +38,19 @@ unpack_dict = {
     int: (
         lambda _, data: (
             struct.unpack("i", data[: size_dict[int]])[0],
-            data[size_dict[int]:],
+            data[size_dict[int] :],
         )
     ),
     bool: (
         lambda _, data: (
             struct.unpack("?", data[: size_dict[bool]])[0],
-            data[size_dict[bool]:],
+            data[size_dict[bool] :],
         )
     ),
     float: (
         lambda _, data: (
             struct.unpack("f", data[: size_dict[float]])[0],
-            data[size_dict[float]:],
+            data[size_dict[float] :],
         )
     ),
     bytes: (lambda _, data: unpack_bytes(data)),
@@ -69,7 +69,7 @@ def unpack_string(data: bytes) -> (str, bytes):
 
 def unpack_bytes(data: bytes) -> (bytes, bytes):
     length = struct.unpack("q", data[: size_dict["str_length"]])[0]
-    data = data[size_dict["str_length"]:]
+    data = data[size_dict["str_length"] :]
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
 
 
