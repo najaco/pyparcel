@@ -11,7 +11,7 @@ setuptools.setup(
     description="Easy to use binary packer that doesn't require struct's specifications",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/najaco/compact",
+    url="https://github.com/najaco/PyParcel",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
