@@ -1,10 +1,10 @@
 import struct
 import unittest
 from typing import List
+from tests.config import FLOATING_POINT_ACCURACY
 
 import pyparcel
 
-ACCURACY = 3
 
 DATA: List[int] = [
     -12345.56789,
@@ -48,8 +48,8 @@ class MyTestCase(unittest.TestCase):
             12345.56789,
         ]
         for i in data:
-            assert round(i, ACCURACY) == round(
-                pyparcel.unpack(pyparcel.pack(i), float()), ACCURACY
+            assert round(i, FLOATING_POINT_ACCURACY) == round(
+                pyparcel.unpack(pyparcel.pack(i), float()), FLOATING_POINT_ACCURACY
             )
 
 

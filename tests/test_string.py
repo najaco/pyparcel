@@ -1,30 +1,29 @@
-import unittest
-from typing import Dict, List
-import pyparcel
 import struct
+import unittest
+from typing import List
+
+import pyparcel
+from tests.config import ENCODING
 
 
 class MyTestCase(unittest.TestCase):
-    class ExampleClassA:
-        def __init__(self, a: int, b: float, c: str):
-            self.a = a
-            self.b = b
-            self.c = c
-
-        def to_dict(self) -> Dict:
-            return {"a": self.a, "b": self.b, "c": self.c}
-
     def test_pack(self):
         data: List[int] = [
             "",
             "Hello",
             "World",
-            "This is a very very very long string",
+            "Hello World",
+            " ",
+            "Some sentence here.",
+            "abcdefghijklmnopqrstuvwxyz",
+            "123456789",
+            "`-=[]\\;',./~_+{}|:\"<>?",
             "a" * 2 ** 20,
+            " " * 2 ** 20,
         ]
         for i in data:
             assert pyparcel.pack(i) == struct.pack(
-                "q{}s".format(len(i)), len(i), i.encode("utf-8")
+                "q{}s".format(len(i)), len(i), i.encode(ENCODING)
             )
 
     def test_pack_unpack(self):
