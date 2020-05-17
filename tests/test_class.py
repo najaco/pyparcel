@@ -39,13 +39,16 @@ DATA: List[ExampleClassA] = [
 class MyTestCase(unittest.TestCase):
     def test_pack(self):
         for o in DATA:
-            assert pyparcel.pack(o) == struct.pack(
-                "ifq{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+            self.assertEqual(
+                pyparcel.pack(o),
+                struct.pack(
+                    "ifq{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                ),
             )
 
     def test_pack_unpack(self):
         for o in DATA:
-            assert o == pyparcel.unpack(pyparcel.pack(o), ExampleClassA())
+            self.assertEqual(o, pyparcel.unpack(pyparcel.pack(o), ExampleClassA()))
 
 
 if __name__ == "__main__":

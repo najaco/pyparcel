@@ -22,8 +22,9 @@ class MyTestCase(unittest.TestCase):
             " " * 2 ** 20,
         ]
         for i in data:
-            assert pyparcel.pack(i) == struct.pack(
-                "q{}s".format(len(i)), len(i), i.encode(ENCODING)
+            self.assertEqual(
+                pyparcel.pack(i),
+                struct.pack("q{}s".format(len(i)), len(i), i.encode(ENCODING)),
             )
 
     def test_pack_unpack(self):
@@ -37,7 +38,7 @@ class MyTestCase(unittest.TestCase):
         ]
 
         for i in data:
-            assert i == pyparcel.unpack(pyparcel.pack(i), str())
+            self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), str()))
 
 
 if __name__ == "__main__":

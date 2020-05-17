@@ -27,11 +27,11 @@ DATA: List[int] = [
 class MyTestCase(unittest.TestCase):
     def test_pack(self):
         for i in DATA:
-            assert pyparcel.pack(i) == struct.pack("i", i)
+            self.assertEqual(pyparcel.pack(i), struct.pack("i", i))
 
     def test_pack_unpack(self):
         for i in DATA:
-            assert i == pyparcel.unpack(pyparcel.pack(i), int())
+            self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), int()))
 
 
 if __name__ == "__main__":

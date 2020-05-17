@@ -48,8 +48,11 @@ class MyTestCase(unittest.TestCase):
             12345.56789,
         ]
         for i in data:
-            assert round(i, FLOATING_POINT_ACCURACY) == round(
-                pyparcel.unpack(pyparcel.pack(i), float()), FLOATING_POINT_ACCURACY
+            self.assertEqual(
+                round(i, FLOATING_POINT_ACCURACY),
+                round(
+                    pyparcel.unpack(pyparcel.pack(i), float()), FLOATING_POINT_ACCURACY
+                ),
             )
 
 
