@@ -38,19 +38,19 @@ unpack_dict = {
     int: (
         lambda _, data: (
             struct.unpack("i", data[: size_dict[int]])[0],
-            data[size_dict[int]:],
+            data[size_dict[int] :],
         )
     ),
     bool: (
         lambda _, data: (
             struct.unpack("?", data[: size_dict[bool]])[0],
-            data[size_dict[bool]:],
+            data[size_dict[bool] :],
         )
     ),
     float: (
         lambda _, data: (
             struct.unpack("f", data[: size_dict[float]])[0],
-            data[size_dict[float]:],
+            data[size_dict[float] :],
         )
     ),
     bytes: (lambda _, data: unpack_bytes(data)),
@@ -69,14 +69,20 @@ def unpack_string(data: bytes):
 
 def unpack_bytes(data: bytes):
     length = struct.unpack("q", data[: size_dict["str_length"]])[0]
-    data = data[size_dict["str_length"]:]
+    data = data[size_dict["str_length"] :]
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
 
 
-def pack(obj: T) -> bytes:
-    return pack_dict.get(
-        type(obj), lambda o: b"".join([pack(o.__getattribute__(x)) for x in vars(o)])
-    )(obj)
+def pack(*objs) -> bytes:
+    return b"".join(
+        [
+            pack_dict.get(
+                type(obj),
+                lambda o: b"".join([pack(o.__getattribute__(x)) for x in vars(o)]),
+            )(obj)
+            for obj in objs
+        ]
+    )
 
 
 def _unpack(data: bytes, obj: T) -> (T, bytes):
@@ -89,5 +95,14 @@ def _unpack(data: bytes, obj: T) -> (T, bytes):
     return obj, data
 
 
-def unpack(data: bytes, obj: T) -> T:
-    return _unpack(data, obj)[0]
+def unpack(data: bytes, *objs) -> List[object]:
+    if len(objs) == 0:
+        raise TypeError("unpack() takes a variable number of objects")
+    if len(objs) == 1:
+        return _unpack(data, objs[0])[0]
+    else:
+        unpacked_objs = []
+        for obj in objs:
+            (result, data) = _unpack(data, obj)
+            unpacked_objs.append(result)
+        return unpacked_objs

@@ -4,24 +4,7 @@ from typing import List
 
 import pyparcel
 
-DATA: List[int] = [
-    -1 << 31,
-    -1000,
-    -57,
-    -26,
-    -20,
-    -5,
-    -2,
-    -1,
-    0,
-    1,
-    2,
-    5,
-    20,
-    57,
-    1000,
-    (1 << 31) - 1,
-]
+DATA = []
 
 
 class MyTestCase(unittest.TestCase):
