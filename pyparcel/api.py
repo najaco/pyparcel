@@ -1,4 +1,4 @@
-from typing import Generic, List, TypeVar
+from typing import Generic, List, TypeVar, Tuple, Any
 import struct
 
 T = TypeVar("T")
@@ -31,7 +31,7 @@ pack_dict = {
     list: (lambda obj: b"".join([pack(x) for x in vars(obj)])),
     set: (lambda obj: raise_(NotImplementedError)),
     dict: (lambda obj: raise_(NotImplementedError)),
-    tuple: (lambda obj: raise_(NotImplementedError)),
+    tuple: (lambda obj: pack(*obj)),
 }
 
 unpack_dict = {
@@ -95,7 +95,7 @@ def _unpack(data: bytes, obj: T) -> (T, bytes):
     return obj, data
 
 
-def unpack(data: bytes, *objs) -> List[object]:
+def unpack(data: bytes, *objs) -> Tuple[Any]:
     if len(objs) == 0:
         raise TypeError("unpack() takes a variable number of objects")
     if len(objs) == 1:
@@ -105,4 +105,4 @@ def unpack(data: bytes, *objs) -> List[object]:
         for obj in objs:
             (result, data) = _unpack(data, obj)
             unpacked_objs.append(result)
-        return unpacked_objs
+        return tuple(unpacked_objs)
