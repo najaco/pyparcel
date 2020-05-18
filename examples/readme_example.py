@@ -13,18 +13,19 @@ class Foo:
         return False
 
 
-
 def main():
-    foo: Foo = Foo(8, 5.7, "Hello World") # Foo(int, float, str)
-    data: bytes = pyparcel.pack(foo) # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
+    foo: Foo = Foo(8, 5.7, "Hello World")  # Foo(int, float, str)
+    data: bytes = pyparcel.pack(
+        foo
+    )  # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
 
     # ...
 
     bar: Foo = Foo()
-    pyparcel.unpack(data, bar) # foo == bar
+    pyparcel.unpack(data, bar)  # foo == bar
     # or
-    baz: Foo = pyparcel.unpack(data, Foo()) # foo == baz
-    
+    baz: Foo = pyparcel.unpack(data, Foo())  # foo == baz
+
     assert foo == bar == baz
 
 
