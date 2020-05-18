@@ -15,7 +15,7 @@ size_dict = {
     int: 4,
     bool: 1,
     float: 4,
-    "str_length": 8,
+    "str_length": 4,
 }
 # find a way to set default size for int
 pack_dict = {
@@ -24,9 +24,9 @@ pack_dict = {
     ),  # if INT_MIN <= obj <= INT_MAX else pack("q", obj)),
     bool: (lambda obj: struct.pack("?", obj)),
     float: (lambda obj: struct.pack("f", obj)),
-    bytes: (lambda obj: struct.pack("q{}s".format(len(obj)), len(obj), obj)),
+    bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
     str: (
-        lambda obj: struct.pack("q{}s".format(len(obj)), len(obj), obj.encode(ENCODING))
+        lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj.encode(ENCODING))
     ),
     list: (lambda obj: b"".join([pack(x) for x in vars(obj)])),
     set: (lambda obj: raise_(NotImplementedError)),
@@ -68,7 +68,7 @@ def unpack_string(data: bytes) -> (str, bytes):
 
 
 def unpack_bytes(data: bytes) -> (bytes, bytes):
-    length = struct.unpack("q", data[: size_dict["str_length"]])[0]
+    length = struct.unpack("i", data[: size_dict["str_length"]])[0]
     data = data[size_dict["str_length"] :]
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
 
