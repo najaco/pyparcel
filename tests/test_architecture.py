@@ -38,32 +38,15 @@ DATA: List[ExampleClassA] = [
 
 class MyTestCase(unittest.TestCase):
     def test_pack_x86(self):
-        pyparcel.configure(pyparcel.X86_ARCHITECTURE)
         for o in DATA:
             self.assertEqual(
                 pyparcel.pack(o),
                 struct.pack(
-                    "ifq{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
                 ),
             )
 
     def test_pack_unpack_x86(self):
-        pyparcel.configure(pyparcel.X86_ARCHITECTURE)
-        for o in DATA:
-            self.assertEqual(o, pyparcel.unpack(pyparcel.pack(o), ExampleClassA()))
-
-    def test_pack_x64(self):
-        pyparcel.configure(pyparcel.X64_ARCHITECTURE)
-        for o in DATA:
-            self.assertEqual(
-                pyparcel.pack(o),
-                struct.pack(
-                    "ifq{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
-                ),
-            )
-
-    def test_pack_unpack_x64(self):
-        pyparcel.configure(pyparcel.X64_ARCHITECTURE)
         for o in DATA:
             self.assertEqual(o, pyparcel.unpack(pyparcel.pack(o), ExampleClassA()))
 
