@@ -37,7 +37,7 @@ DATA: List[ExampleClassA] = [
 
 
 class MyTestCase(unittest.TestCase):
-    def test_pack(self):
+    def test_pack_x86(self):
         for o in DATA:
             self.assertEqual(
                 pyparcel.pack(o),
@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
                 ),
             )
 
-    def test_pack_unpack(self):
+    def test_pack_unpack_x86(self):
         for o in DATA:
             self.assertEqual(o, pyparcel.unpack(pyparcel.pack(o), ExampleClassA()))
 

@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
         for i in data:
             self.assertEqual(
                 pyparcel.pack(i),
-                struct.pack("q{}s".format(len(i)), len(i), i.encode(ENCODING)),
+                struct.pack("i{}s".format(len(i)), len(i), i.encode(ENCODING)),
             )
 
     def test_pack_unpack(self):
