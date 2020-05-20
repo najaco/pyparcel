@@ -61,7 +61,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(
                 pyparcel.pack(o),
                 struct.pack(
-                    "ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "=ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
                 ),
             )
 
@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
                                            sfloat=StrictType.DOUBLE, str_length=StrictType.UNSIGNED_LONG)
         custom_pack = pyparcel.generate_pack_with_architecture(custom_architecture)
         o = ExampleClassA(8, 5.7)
-        self.assertEqual(custom_pack(o), struct.pack("qd", o.a, o.b))
+        self.assertEqual(custom_pack(o), struct.pack("=qd", o.a, o.b))
 
     def test_pack_unpack_different_arch_simple(self):
         custom_architecture = Architecture(str_length=StrictType.UNSIGNED_LONG, sint=StrictType.LONG_LONG,
@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
         custom_architecture = Architecture(str_length=StrictType.UNSIGNED_LONG)
         custom_pack = pyparcel.generate_pack_with_architecture(custom_architecture)
         test_string = "Hello World!"
-        self.assertEqual(custom_pack(test_string), struct.pack("L{}s".format(len(test_string)), len(test_string), test_string.encode(ENCODING)))
+        self.assertEqual(custom_pack(test_string), struct.pack("=L{}s".format(len(test_string)), len(test_string), test_string.encode(ENCODING)))
 
     def test_pack_unpack_different_arch_str(self):
         custom_architecture = Architecture(str_length=StrictType.UNSIGNED_LONG)
@@ -105,7 +105,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(
                 custom_pack(o),
                 struct.pack(
-                    "qdL{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "=qdL{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
                 ),
             )
 
