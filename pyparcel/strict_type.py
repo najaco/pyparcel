@@ -6,7 +6,7 @@ TypeData = namedtuple("TypeData", ["format", "size"])
 
 
 class StrictType(Enum):
-    """Represents the strict types that are found in statically typed lanuguages.
+    """Represents the strict types that are found in statically typed languages.
     """
 
     PAD_BYTE = TypeData("x", 1)
