@@ -36,5 +36,12 @@ class MyTestCase(unittest.TestCase):
         )
 
 
+    def simple_test(self):
+        self.assertEqual(
+            tuple(1,2,3), pyparcel.unpack(pyparcel.pack(tuple(1, 2, 3)), tuple(int(), int(), int()))
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
+
