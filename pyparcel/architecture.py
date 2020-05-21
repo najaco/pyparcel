@@ -11,6 +11,7 @@ class Architecture:
         sstr: StrictType = StrictType.CHAR_ARR,
         sbytes: StrictType = StrictType.CHAR_ARR,
         str_length: StrictType = StrictType.INT,
+        encoding: str = "utf-8",
     ):
         self._data: Dict[Any, StrictType] = {
             int: sint,
@@ -20,8 +21,9 @@ class Architecture:
             bytes: sbytes,
             "str_length": str_length,
         }
+        self.encoding = encoding
 
-    def __getitem__(self, key: Any) -> int:
+    def __getitem__(self, key: Any) -> StrictType:
         if key not in self._data:
             raise IndexError
         return self._data[key]
