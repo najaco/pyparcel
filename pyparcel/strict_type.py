@@ -6,7 +6,7 @@ class Char(str):
     Represents the strict type for a char.
     """
 
-    FORMAT: str = "c"
+    FORMAT: str = "=c"
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: str = "\0"):
@@ -29,7 +29,7 @@ class UnsignedChar(int):
     Represents the strict type for an unsigned char.
     """
 
-    FORMAT: str = "B"
+    FORMAT: str = "=B"
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: int = 0):
@@ -51,7 +51,7 @@ class SignedChar(int):
     Represents the strict type for a signed char.
     """
 
-    FORMAT: str = "b"
+    FORMAT: str = "=b"
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: int = 0):
@@ -73,7 +73,7 @@ class Short(int):
     Represents the strict type for a short.
     """
 
-    FORMAT: str = "h"
+    FORMAT: str = "=h"
     STANDARD_SIZE: int = 2
 
     def __init__(self, n: int = 0):
@@ -96,7 +96,7 @@ class UnsignedShort(int):
     Represents the strict type for an unsigned short.
     """
 
-    FORMAT: str = "H"
+    FORMAT: str = "=H"
     STANDARD_SIZE: int = 2
 
     def __init__(self, n: int = 0):
@@ -119,7 +119,7 @@ class Int(int):
     Represents the strict type for an integer.
     """
 
-    FORMAT: str = "i"
+    FORMAT: str = "=i"
     STANDARD_SIZE: int = 4
 
     def __init__(self, n: int = 0):
@@ -142,7 +142,7 @@ class UnsignedInt(int):
     Represents the strict type for an unsigned integer.
     """
 
-    FORMAT: str = "I"
+    FORMAT: str = "=I"
     STANDARD_SIZE: int = 4
 
     def __init__(self, n: int = 0):
@@ -165,7 +165,7 @@ class Long(int):
     Represents the strict type for an long.
     """
 
-    FORMAT: str = "l"
+    FORMAT: str = "=l"
     STANDARD_SIZE: int = 4
 
     def __init__(self, n: int = 0):
@@ -188,7 +188,7 @@ class UnsignedLong(int):
     Represents the strict type for an unsigned long.
     """
 
-    FORMAT: str = "L"
+    FORMAT: str = "=L"
     STANDARD_SIZE: int = 4
 
     def __init__(self, n: int = 0):
@@ -211,7 +211,7 @@ class LongLong(int):
     Represents the strict type for a long long.
     """
 
-    FORMAT: str = "q"
+    FORMAT: str = "=q"
     STANDARD_SIZE: int = 8
 
     def __init__(self, n: int = 0):
@@ -234,7 +234,7 @@ class UnsignedLongLong(int):
     Represents the strict type for an unsigned long long.
     """
 
-    FORMAT: str = "Q"
+    FORMAT: str = "=Q"
     STANDARD_SIZE: int = 8
 
     def __init__(self, n: int = 0):
@@ -259,7 +259,7 @@ class Float(float):
     Represents the strict type for a float.
     """
 
-    FORMAT: str = "f"
+    FORMAT: str = "=f"
     STANDARD_SIZE: int = 4
 
     def __init__(self, n: int = 0):
@@ -280,7 +280,7 @@ class Double(float):
     Represents the strict type for a double.
     """
 
-    FORMAT: str = "d"
+    FORMAT: str = "=d"
     STANDARD_SIZE: int = 8
 
     def __init__(self, n: int = 0):

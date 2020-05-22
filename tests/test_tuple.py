@@ -16,7 +16,7 @@ DATA = [
 ]
 
 
-class MyTestCase(unittest.TestCase):
+class TestTuple(unittest.TestCase):
     def test_pack(self):
         for i in DATA:
             self.assertEqual(pyparcel.pack(i), struct.pack("i" * len(i), *i))
@@ -35,13 +35,12 @@ class MyTestCase(unittest.TestCase):
             tuple(DATA), pyparcel.unpack(pyparcel.pack(tuple(DATA)), structure)
         )
 
-
     def simple_test(self):
         self.assertEqual(
-            tuple(1,2,3), pyparcel.unpack(pyparcel.pack(tuple(1, 2, 3)), tuple(int(), int(), int()))
+            tuple(1, 2, 3),
+            pyparcel.unpack(pyparcel.pack(tuple(1, 2, 3)), tuple(int(), int(), int())),
         )
 
 
 if __name__ == "__main__":
     unittest.main()
-
