@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyparcel",
-    version="0.0.1",
+    version="0.0.4",
     author="Nathan Cohen",
     author_email="ncohen4299@gmail.com",
     description="Easy to use binary packer that doesn't require struct's specifications",
