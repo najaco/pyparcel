@@ -19,7 +19,7 @@ DATA = [
 class TestVarArgs(unittest.TestCase):
     def test_same_pack(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(*i), struct.pack("=i" * len(i), *i))
+            self.assertEqual(pyparcel.pack(*i), struct.pack("=" + ("i" * len(i)), *i))
 
     def test_same_pack_unpack(self):
         for i in DATA:
