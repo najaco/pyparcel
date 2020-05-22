@@ -6,7 +6,7 @@ import pyparcel
 from tests.config import ENCODING
 
 
-class MyTestCase(unittest.TestCase):
+class TestString(unittest.TestCase):
     def test_pack(self):
         data: List[int] = [
             "",
@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
         for i in data:
             self.assertEqual(
                 pyparcel.pack(i),
-                struct.pack("i{}s".format(len(i)), len(i), i.encode(ENCODING)),
+                struct.pack("=i{}s".format(len(i)), len(i), i.encode(ENCODING)),
             )
 
     def test_pack_unpack(self):

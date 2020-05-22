@@ -1,0 +1,126 @@
+import unittest
+from typing import List
+
+import pyparcel
+import struct
+from pyparcel import UnsignedShort
+
+DATA: List[int] = [
+    0,
+    1,
+    57,
+    608,
+    1907,
+    2562,
+    3192,
+    3902,
+    4873,
+    5620,
+    6131,
+    6986,
+    7172,
+    7656,
+    7719,
+    9306,
+    9534,
+    10276,
+    11202,
+    11505,
+    12676,
+    12980,
+    13149,
+    13538,
+    15833,
+    16243,
+    17692,
+    19321,
+    21180,
+    21530,
+    21841,
+    22074,
+    23379,
+    23482,
+    23760,
+    24970,
+    25269,
+    26001,
+    26359,
+    26439,
+    26770,
+    27236,
+    28517,
+    28924,
+    28984,
+    30264,
+    30508,
+    31166,
+    31964,
+    32059,
+    33270,
+    33524,
+    33544,
+    33885,
+    34686,
+    35685,
+    36457,
+    38250,
+    38676,
+    38700,
+    39570,
+    39962,
+    40783,
+    40905,
+    41358,
+    42054,
+    42345,
+    42785,
+    44160,
+    45400,
+    45774,
+    45851,
+    46107,
+    47197,
+    48578,
+    49093,
+    49555,
+    51331,
+    51523,
+    51891,
+    52935,
+    55913,
+    56227,
+    56302,
+    56560,
+    56920,
+    57411,
+    58172,
+    58473,
+    58804,
+    60107,
+    60374,
+    60565,
+    61418,
+    62556,
+    63084,
+    64301,
+    64884,
+    65286,
+    65535,
+]
+
+
+class TestStrictUnsignedShort(unittest.TestCase):
+    def test_pack(self):
+        for i in DATA:
+            self.assertEqual(pyparcel.pack(UnsignedShort(i)), struct.pack("=H", i))
+
+    def test_pack_unpack(self):
+        for i in DATA:
+            self.assertEqual(
+                UnsignedShort(i),
+                pyparcel.unpack(pyparcel.pack(UnsignedShort(i)), UnsignedShort()),
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()
