@@ -41,11 +41,25 @@ def generate_pack_with_architecture(
             lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding))
 
         ),
-        list: (lambda obj: b"".join([_pack(x) for x in vars(obj)])),
+        list: (lambda obj: pack_list(obj)),
         set: (lambda obj: raise_(NotImplementedError)),
         dict: (lambda obj: raise_(NotImplementedError)),
         tuple: (lambda obj: _pack(*obj)),
     }
+
+    def pack_list(li: List[T]) -> bytes:
+        """
+        Packs *li* of size *n* in the following format:
+        ``[n][li_1][li_2]...[li_n]``
+
+        :param li: List to be packed
+        :return: Packed byte string of *list*
+        """
+        if len(li) == 0:
+            return _pack(len(li))
+        if not all(type(i) == type(li[0]) for i in li):  # asserts that all items in list are of same type
+            raise Exception("All items in list must be of same type to pack.")
+        return b"".join([_pack(i) for i in [len(li)] + li])
 
     def _pack(*objs: Any) -> bytes:
         return b"".join(
