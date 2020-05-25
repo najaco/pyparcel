@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 pytest = "*"
 importlib-metadata = "*"
+sphinx = "*"
 
 [requires]
 python_version = "3.8"
