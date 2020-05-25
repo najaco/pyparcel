@@ -15,7 +15,7 @@ X86_ARCHITECTURE: Architecture = Architecture()
 
 
 def generate_pack_with_architecture(
-        arc: Architecture = X86_ARCHITECTURE,
+    arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[Any], bytes]:
     pack_dict: Dict[type, Callable[[Any], bytes]] = {
         int: (lambda obj: _pack(Int(obj))),
@@ -34,12 +34,11 @@ def generate_pack_with_architecture(
         UnsignedLongLong: (lambda obj: obj.__pack__()),
         Float: (lambda obj: obj.__pack__()),
         Double: (lambda obj: obj.__pack__()),
-        bytes: (
-            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)
-        ),
+        bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
         str: (
-            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding))
-
+            lambda obj: struct.pack(
+                "i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding)
+            )
         ),
         list: (lambda obj: pack_list(obj)),
         set: (lambda obj: raise_(NotImplementedError)),
@@ -57,10 +56,22 @@ def generate_pack_with_architecture(
         """
         if len(li) == 0:
             return _pack(len(li))
-        if not all(type(i) == type(li[0]) for i in li):  # asserts that all items in list are of same type
-            raise Exception("All items in list must be of same type to pack.")
-        return b"".join([_pack(i) for i in [len(li)] + li])
-        
+        conformed_list = _conform_list(li)
+        return b"".join([_pack(i) for i in [len(conformed_list)] + conformed_list])
+
+    def _conform_list(li: List[Any]) -> List[T]:
+        conform_type = li[0].__class__
+        for i in li:
+            if isinstance(i, StrictType):
+                conform_type = i.__class__
+                break
+        base_type = (
+            conform_type.__base__ if conform_type.__base__ != object else None
+        )  # do not let base_type be 'object'
+        if not all(type(i) == conform_type or type(i) == base_type for i in li):
+            raise Exception(f"{li} can not be conformed to the {conform_type}")
+        return [i if isinstance(i, conform_type) else conform_type(i) for i in li]
+
     def _pack(*objs: Any) -> bytes:
         return b"".join(
             [
@@ -76,16 +87,11 @@ def generate_pack_with_architecture(
 
 
 def generate_unpack_with_architecture(
-        arc: Architecture = X86_ARCHITECTURE,
+    arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[bytes, Any], Tuple[Any, ...]]:
     unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
         int: (lambda obj, data: _unpack_helper(data, Int(obj))),
-        bool: (
-            lambda _, data: (
-                struct.unpack("=?", data[: 1])[0],
-                data[1:],
-            )
-        ),
+        bool: (lambda _, data: (struct.unpack("=?", data[:1])[0], data[1:],)),
         float: (lambda obj, data: _unpack_helper(data, Float(obj))),
         Char: (lambda obj, data: obj.__unpack__(data)),
         UnsignedChar: (lambda obj, data: obj.__unpack__(data)),
@@ -113,9 +119,7 @@ def generate_unpack_with_architecture(
         return result.decode(arc.encoding), data
 
     def unpack_bytes(data: bytes) -> (bytes, bytes):
-        length = struct.unpack(
-            "i", data[: 4]
-        )[0]
+        length = struct.unpack("i", data[:4])[0]
         data = data[4:]
         return (
             struct.unpack("{}s".format(length), data[:length])[0],
@@ -130,9 +134,7 @@ def generate_unpack_with_architecture(
         return tuple(unpacked_objs), data
 
     def unpack_list(data: bytes, t: List[T]) -> (List[T], bytes):
-        length = struct.unpack(
-            "i", data[: 4]
-        )[0]
+        length = struct.unpack("i", data[:4])[0]
         data = data[4:]
         obj_shell = t[0]
         t.pop()

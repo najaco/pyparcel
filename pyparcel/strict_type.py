@@ -1,4 +1,29 @@
 import struct
+from abc import ABCMeta, abstractmethod
+from typing import Any, TypeVar
+
+T = TypeVar("T")
+
+
+class StrictType(metaclass=ABCMeta):
+    @property
+    @abstractmethod
+    def FORMAT(self):
+        pass
+
+    @property
+    @abstractmethod
+    def STANDARD_SIZE(self):
+        pass
+
+    def __pack__(self) -> bytes:
+        return struct.pack(self.FORMAT, self)
+
+    def __unpack__(self, data: bytes) -> (T, bytes):
+        return (
+            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
+            data[self.STANDARD_SIZE :],
+        )
 
 
 class Char(str):
@@ -24,7 +49,7 @@ class Char(str):
         )
 
 
-class UnsignedChar(int):
+class UnsignedChar(int, StrictType):
     """
     Represents the strict type for an unsigned char.
     """
@@ -37,17 +62,8 @@ class UnsignedChar(int):
             raise Exception("UnsignedChar must be between 0 and 255")
         super(int, UnsignedChar).__init__(c)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class SignedChar(int):
+class SignedChar(int, StrictType):
     """
     Represents the strict type for a signed char.
     """
@@ -60,17 +76,8 @@ class SignedChar(int):
             raise Exception("SignedChar must be between -128 and 127")
         super(int, SignedChar).__init__(c)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class Short(int):
+class Short(int, StrictType):
     """
     Represents the strict type for a short.
     """
@@ -83,17 +90,8 @@ class Short(int):
             raise Exception("Short must be between -32768 and 32767")
         super(int, Short).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class UnsignedShort(int):
+class UnsignedShort(int, StrictType):
     """
     Represents the strict type for an unsigned short.
     """
@@ -106,17 +104,8 @@ class UnsignedShort(int):
             raise Exception("Short must be between 0 and 65535")
         super(int, UnsignedShort).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class Int(int):
+class Int(int, StrictType):
     """
     Represents the strict type for an integer.
     """
@@ -129,17 +118,8 @@ class Int(int):
             raise Exception("Short must be between -2147483648 and 2147483647")
         super(int, Int).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class UnsignedInt(int):
+class UnsignedInt(int, StrictType):
     """
     Represents the strict type for an unsigned integer.
     """
@@ -152,17 +132,8 @@ class UnsignedInt(int):
             raise Exception("Unsigned Integer must be between 0 and 4294967295")
         super(int, UnsignedInt).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class Long(int):
+class Long(int, StrictType):
     """
     Represents the strict type for an long.
     """
@@ -175,17 +146,8 @@ class Long(int):
             raise Exception("Long must be between -2147483648 and 2147483647")
         super(int, Long).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class UnsignedLong(int):
+class UnsignedLong(int, StrictType):
     """
     Represents the strict type for an unsigned long.
     """
@@ -198,17 +160,8 @@ class UnsignedLong(int):
             raise Exception("UnsignedLong must be between 0 and 4294967295")
         super(int, UnsignedLong).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class LongLong(int):
+class LongLong(int, StrictType):
     """
     Represents the strict type for a long long.
     """
@@ -221,17 +174,8 @@ class LongLong(int):
             raise Exception("LongLong must be between 0 and 9223372036854775807")
         super(int, LongLong).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class UnsignedLongLong(int):
+class UnsignedLongLong(int, StrictType):
     """
     Represents the strict type for an unsigned long long.
     """
@@ -246,17 +190,8 @@ class UnsignedLongLong(int):
             )
         super(int, UnsignedLongLong).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class Float(float):
+class Float(float, StrictType):
     """
     Represents the strict type for a float.
     """
@@ -267,17 +202,8 @@ class Float(float):
     def __init__(self, n: int = 0):
         super(float, Float).__init__(n)
 
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
 
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
-
-
-class Double(float):
+class Double(float, StrictType):
     """
     Represents the strict type for a double.
     """
@@ -287,12 +213,3 @@ class Double(float):
 
     def __init__(self, n: int = 0):
         super(float, Double).__init__(n)
-
-    def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
-
-    def __unpack__(self, data: bytes) -> (float, bytes):
-        return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE :],
-        )
