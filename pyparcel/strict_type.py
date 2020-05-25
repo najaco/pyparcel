@@ -6,6 +6,12 @@ T = TypeVar("T")
 
 
 class StrictType(metaclass=ABCMeta):
+    """
+    Abstract class for StrictType. Defines standard ``__pack__`` and ``__unpack__`` functions.
+    :cvar FORMAT: Format specifier used when packing obj
+    :cvar STANDARD_SIZE: Standard size of obj in bytes
+    """
+
     @property
     @abstractmethod
     def FORMAT(self):
@@ -35,6 +41,10 @@ class Char(str):
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: str = "\0"):
+        """
+        Initializes
+        :param c:
+        """
         if len(c) != 1:
             raise Exception("Char may only take arguments of length 1")
         super(str, Char).__init__(c)
