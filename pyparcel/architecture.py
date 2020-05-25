@@ -4,9 +4,7 @@ from .strict_type import Int
 
 class Architecture:
     def __init__(
-        self,
-        str_length: type = Int,
-        encoding: str = "utf-8",
+        self, str_length: type = Int, encoding: str = "utf-8",
     ):
         self._data: Dict[Any, type] = {
             "str_length": str_length,

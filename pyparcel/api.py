@@ -15,7 +15,7 @@ X86_ARCHITECTURE: Architecture = Architecture()
 
 
 def generate_pack_with_architecture(
-        arc: Architecture = X86_ARCHITECTURE,
+    arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[Any], bytes]:
     pack_dict: Dict[type, Callable[[Any], bytes]] = {
         int: (lambda obj: _pack(Int(obj))),
@@ -34,18 +34,43 @@ def generate_pack_with_architecture(
         UnsignedLongLong: (lambda obj: obj.__pack__()),
         Float: (lambda obj: obj.__pack__()),
         Double: (lambda obj: obj.__pack__()),
-        bytes: (
-            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)
-        ),
+        bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
         str: (
-            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding))
-
+            lambda obj: struct.pack(
+                "i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding)
+            )
         ),
-        list: (lambda obj: b"".join([_pack(x) for x in vars(obj)])),
+        list: (lambda obj: pack_list(obj)),
         set: (lambda obj: raise_(NotImplementedError)),
         dict: (lambda obj: raise_(NotImplementedError)),
         tuple: (lambda obj: _pack(*obj)),
     }
+
+    def pack_list(li: List[T]) -> bytes:
+        """
+        Packs *li* of size *n* in the following format:
+        ``[n][li_1][li_2]...[li_n]``
+
+        :param li: List to be packed
+        :return: Packed byte string of *list*
+        """
+        if len(li) == 0:
+            return _pack(len(li))
+        conformed_list = _conform_list(li)
+        return b"".join([_pack(i) for i in [len(conformed_list)] + conformed_list])
+
+    def _conform_list(li: List[Any]) -> List[T]:
+        conform_type = li[0].__class__
+        for i in li:
+            if isinstance(i, StrictType):
+                conform_type = i.__class__
+                break
+        base_type = (
+            conform_type.__base__ if conform_type.__base__ != object else None
+        )  # do not let base_type be 'object'
+        if not all(type(i) == conform_type or type(i) == base_type for i in li):
+            raise Exception(f"{li} can not be conformed to the {conform_type}")
+        return [i if isinstance(i, conform_type) else conform_type(i) for i in li]
 
     def _pack(*objs: Any) -> bytes:
         return b"".join(
@@ -62,16 +87,11 @@ def generate_pack_with_architecture(
 
 
 def generate_unpack_with_architecture(
-        arc: Architecture = X86_ARCHITECTURE,
+    arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[bytes, Any], Tuple[Any, ...]]:
     unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
         int: (lambda obj, data: _unpack_helper(data, Int(obj))),
-        bool: (
-            lambda _, data: (
-                struct.unpack("=?", data[: 1])[0],
-                data[1:],
-            )
-        ),
+        bool: (lambda _, data: (struct.unpack("=?", data[:1])[0], data[1:],)),
         float: (lambda obj, data: _unpack_helper(data, Float(obj))),
         Char: (lambda obj, data: obj.__unpack__(data)),
         UnsignedChar: (lambda obj, data: obj.__unpack__(data)),
@@ -88,7 +108,7 @@ def generate_unpack_with_architecture(
         Double: (lambda obj, data: obj.__unpack__(data)),
         bytes: (lambda _, data: unpack_bytes(data)),
         str: (lambda _, data: unpack_string(data)),
-        list: (lambda obj, _: raise_(NotImplementedError)),
+        list: (lambda obj, data: unpack_list(data, obj)),
         set: (lambda obj, _: raise_(NotImplementedError)),
         dict: (lambda obj, _: raise_(NotImplementedError)),
         tuple: (lambda obj, data: unpack_tuple(data, obj)),
@@ -99,9 +119,7 @@ def generate_unpack_with_architecture(
         return result.decode(arc.encoding), data
 
     def unpack_bytes(data: bytes) -> (bytes, bytes):
-        length = struct.unpack(
-            "i", data[: 4]
-        )[0]
+        length = struct.unpack("i", data[:4])[0]
         data = data[4:]
         return (
             struct.unpack("{}s".format(length), data[:length])[0],
@@ -114,6 +132,16 @@ def generate_unpack_with_architecture(
             (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
         return tuple(unpacked_objs), data
+
+    def unpack_list(data: bytes, t: List[T]) -> (List[T], bytes):
+        length = struct.unpack("i", data[:4])[0]
+        data = data[4:]
+        obj_shell = t[0]
+        t.pop()
+        for i in range(0, length):
+            (result, data) = _unpack_helper(data, obj_shell)
+            t.append(result)
+        return t, data
 
     def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
         if type(obj) in unpack_dict:
