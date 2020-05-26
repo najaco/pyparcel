@@ -30,7 +30,7 @@ Types                   # Bytes      Format Specifier
 
 Example
 ########
-.. literalinclude:: ../examples/strict_class_example.py
+.. literalinclude:: ../../examples/strict_class_example.py
     :language: python
     :lines: 1-9
 
