@@ -32,5 +32,9 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+## Documentation is available at [https://najaco.github.io/pyparcel/](https://najaco.github.io/pyparcel/)
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+
