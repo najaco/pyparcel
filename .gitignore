@@ -239,3 +239,4 @@ dmypy.json
 .idea/*
 */.vscode/*
 docs/.vscode/
+docsource/_build/
