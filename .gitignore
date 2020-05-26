@@ -237,3 +237,5 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python,VisualStudioCode,PyCharm,macOS
 .idea/*
+*/.vscode/*
+docs/.vscode/

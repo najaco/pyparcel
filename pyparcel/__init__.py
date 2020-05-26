@@ -6,4 +6,18 @@ from .api import (
     X86_ARCHITECTURE,
 )
 from .architecture import Architecture
-from .strict_type import *
+from .strict_type import (
+    Char,
+    UnsignedChar,
+    SignedChar,
+    Short,
+    UnsignedShort,
+    Int,
+    UnsignedInt,
+    Long,
+    UnsignedLong,
+    LongLong,
+    UnsignedLongLong,
+    Float,
+    Double,
+)
