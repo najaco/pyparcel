@@ -1,171 +1,179 @@
-import struct
-from typing import TypeVar, Tuple, Any, Callable, Dict, List
+from typing import Tuple, Callable, Dict, List
+
 from .strict_type import *
 
-from .architecture import Architecture
-
 T = TypeVar("T")
+global_encoding: str = "utf-8"
 
 
-def raise_(ex):
+def _lambda_raise_(ex):
     raise ex
 
 
-X86_ARCHITECTURE: Architecture = Architecture()
-
-
-def generate_pack_with_architecture(
-    arc: Architecture = X86_ARCHITECTURE,
-) -> Callable[[Any], bytes]:
-    pack_dict: Dict[type, Callable[[Any], bytes]] = {
-        int: (lambda obj: _pack(Int(obj))),
-        bool: (lambda obj: struct.pack("=?", obj)),
-        float: (lambda obj: _pack(Float(obj))),
-        Char: (lambda obj: obj.__pack__()),
-        UnsignedChar: (lambda obj: obj.__pack__()),
-        SignedChar: (lambda obj: obj.__pack__()),
-        Short: (lambda obj: obj.__pack__()),
-        UnsignedShort: (lambda obj: obj.__pack__()),
-        Int: (lambda obj: obj.__pack__()),
-        UnsignedInt: (lambda obj: obj.__pack__()),
-        Long: (lambda obj: obj.__pack__()),
-        UnsignedLong: (lambda obj: obj.__pack__()),
-        LongLong: (lambda obj: obj.__pack__()),
-        UnsignedLongLong: (lambda obj: obj.__pack__()),
-        Float: (lambda obj: obj.__pack__()),
-        Double: (lambda obj: obj.__pack__()),
-        bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
-        str: (
-            lambda obj: struct.pack(
-                "i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding)
-            )
-        ),
-        list: (lambda obj: pack_list(obj)),
-        set: (lambda obj: raise_(NotImplementedError)),
-        dict: (lambda obj: raise_(NotImplementedError)),
-        tuple: (lambda obj: _pack(*obj)),
-    }
-
-    def pack_list(li: List[T]) -> bytes:
-        """
-        Packs *li* of size *n* in the following format:
-        ``[n][li_1][li_2]...[li_n]``
-
-        :param li: List to be packed
-        :return: Packed byte string of *list*
-        """
-        if len(li) == 0:
-            return _pack(len(li))
-        conformed_list = _conform_list(li)
-        return b"".join([_pack(i) for i in [len(conformed_list)] + conformed_list])
-
-    def _conform_list(li: List[Any]) -> List[T]:
-        conform_type = li[0].__class__
-        for i in li:
-            if isinstance(i, StrictType):
-                conform_type = i.__class__
-                break
-        base_type = (
-            conform_type.__base__ if conform_type.__base__ != object else None
-        )  # do not let base_type be 'object'
-        if not all(type(i) == conform_type or type(i) == base_type for i in li):
-            raise Exception(f"{li} can not be conformed to the {conform_type}")
-        return [i if isinstance(i, conform_type) else conform_type(i) for i in li]
-
-    def _pack(*objs: Any) -> bytes:
-        return b"".join(
-            [
-                pack_dict.get(
-                    type(obj),
-                    lambda o: b"".join([_pack(o.__getattribute__(x)) for x in vars(o)]),
-                )(obj)
-                for obj in objs
-            ]
+pack_dict: Dict[type, Callable[[Any], bytes]] = {
+    int: (lambda obj: pack(Int(obj))),
+    bool: (lambda obj: struct.pack("=?", obj)),
+    float: (lambda obj: pack(Float(obj))),
+    Char: (lambda obj: obj.__pack__()),
+    UnsignedChar: (lambda obj: obj.__pack__()),
+    SignedChar: (lambda obj: obj.__pack__()),
+    Short: (lambda obj: obj.__pack__()),
+    UnsignedShort: (lambda obj: obj.__pack__()),
+    Int: (lambda obj: obj.__pack__()),
+    UnsignedInt: (lambda obj: obj.__pack__()),
+    Long: (lambda obj: obj.__pack__()),
+    UnsignedLong: (lambda obj: obj.__pack__()),
+    LongLong: (lambda obj: obj.__pack__()),
+    UnsignedLongLong: (lambda obj: obj.__pack__()),
+    Float: (lambda obj: obj.__pack__()),
+    Double: (lambda obj: obj.__pack__()),
+    bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
+    str: (
+        lambda obj: struct.pack(
+            "i{}s".format(len(obj)), len(obj), obj.encode(global_encoding)
         )
+    ),
+    list: (lambda obj: _pack_list(obj)),
+    set: (lambda obj: _lambda_raise_(NotImplementedError)),
+    dict: (lambda obj: _lambda_raise_(NotImplementedError)),
+    tuple: (lambda obj: pack(*obj)),
+}
 
-    return _pack
+unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
+    int: (lambda obj, data: _unpack_helper(data, Int(obj))),
+    bool: (lambda _, data: (struct.unpack("=?", data[:1])[0], data[1:],)),
+    float: (lambda obj, data: _unpack_helper(data, Float(obj))),
+    Char: (lambda obj, data: obj.__unpack__(data)),
+    UnsignedChar: (lambda obj, data: obj.__unpack__(data)),
+    SignedChar: (lambda obj, data: obj.__unpack__(data)),
+    Short: (lambda obj, data: obj.__unpack__(data)),
+    UnsignedShort: (lambda obj, data: obj.__unpack__(data)),
+    Int: (lambda obj, data: obj.__unpack__(data)),
+    UnsignedInt: (lambda obj, data: obj.__unpack__(data)),
+    Long: (lambda obj, data: obj.__unpack__(data)),
+    UnsignedLong: (lambda obj, data: obj.__unpack__(data)),
+    LongLong: (lambda obj, data: obj.__unpack__(data)),
+    UnsignedLongLong: (lambda obj, data: obj.__unpack__(data)),
+    Float: (lambda obj, data: obj.__unpack__(data)),
+    Double: (lambda obj, data: obj.__unpack__(data)),
+    bytes: (lambda _, data: _unpack_bytes(data)),
+    str: (lambda _, data: _unpack_string(data)),
+    list: (lambda obj, data: _unpack_list(data, obj)),
+    set: (lambda obj, _: _lambda_raise_(NotImplementedError)),
+    dict: (lambda obj, _: _lambda_raise_(NotImplementedError)),
+    tuple: (lambda obj, data: _unpack_tuple(data, obj)),
+}
 
 
-def generate_unpack_with_architecture(
-    arc: Architecture = X86_ARCHITECTURE,
-) -> Callable[[bytes, Any], Tuple[Any, ...]]:
-    unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
-        int: (lambda obj, data: _unpack_helper(data, Int(obj))),
-        bool: (lambda _, data: (struct.unpack("=?", data[:1])[0], data[1:],)),
-        float: (lambda obj, data: _unpack_helper(data, Float(obj))),
-        Char: (lambda obj, data: obj.__unpack__(data)),
-        UnsignedChar: (lambda obj, data: obj.__unpack__(data)),
-        SignedChar: (lambda obj, data: obj.__unpack__(data)),
-        Short: (lambda obj, data: obj.__unpack__(data)),
-        UnsignedShort: (lambda obj, data: obj.__unpack__(data)),
-        Int: (lambda obj, data: obj.__unpack__(data)),
-        UnsignedInt: (lambda obj, data: obj.__unpack__(data)),
-        Long: (lambda obj, data: obj.__unpack__(data)),
-        UnsignedLong: (lambda obj, data: obj.__unpack__(data)),
-        LongLong: (lambda obj, data: obj.__unpack__(data)),
-        UnsignedLongLong: (lambda obj, data: obj.__unpack__(data)),
-        Float: (lambda obj, data: obj.__unpack__(data)),
-        Double: (lambda obj, data: obj.__unpack__(data)),
-        bytes: (lambda _, data: unpack_bytes(data)),
-        str: (lambda _, data: unpack_string(data)),
-        list: (lambda obj, data: unpack_list(data, obj)),
-        set: (lambda obj, _: raise_(NotImplementedError)),
-        dict: (lambda obj, _: raise_(NotImplementedError)),
-        tuple: (lambda obj, data: unpack_tuple(data, obj)),
-    }
+def _pack_list(li: List[T]) -> bytes:
+    """
+    Packs *li* of size *n* in the following format:
+    ``[n][li_1][li_2]...[li_n]``
 
-    def unpack_string(data: bytes) -> (str, bytes):
-        result, data = unpack_bytes(data)
-        return result.decode(arc.encoding), data
+    :param li: List to be packed
+    :return: Packed byte string of *list*
+    """
+    if len(li) == 0:
+        return pack(len(li))
+    conformed_list = _conform_list(li)
+    return b"".join([pack(i) for i in [len(conformed_list)] + conformed_list])
 
-    def unpack_bytes(data: bytes) -> (bytes, bytes):
-        length = struct.unpack("i", data[:4])[0]
-        data = data[4:]
-        return (
-            struct.unpack("{}s".format(length), data[:length])[0],
-            data[length:],
-        )
 
-    def unpack_tuple(data: bytes, t: Tuple[Any]) -> (Tuple[Any], bytes):
+def _conform_list(li: List[Any]) -> List[T]:
+    """
+    Ensures that every element in *li* can conform to one type
+    :param li: list to conform
+    :return: conformed list
+    """
+    conform_type = li[0].__class__
+    for i in li:
+        if isinstance(i, StrictType):
+            conform_type = i.__class__
+            break
+    base_type = (
+        conform_type.__base__ if conform_type.__base__ != object else None
+    )  # do not let base_type be 'object'
+    if not all(type(i) == conform_type or type(i) == base_type for i in li):
+        raise Exception(f"{li} can not be conformed to the {conform_type}")
+    return [i if isinstance(i, conform_type) else conform_type(i) for i in li]
+
+
+def _unpack_string(data: bytes) -> (str, bytes):
+    result, data = _unpack_bytes(data)
+    return result.decode(global_encoding), data
+
+
+def _unpack_bytes(data: bytes) -> (bytes, bytes):
+    length = struct.unpack("i", data[:4])[0]
+    data = data[4:]
+    return (
+        struct.unpack("{}s".format(length), data[:length])[0],
+        data[length:],
+    )
+
+
+def _unpack_tuple(data: bytes, t: Tuple[Any]) -> (Tuple[Any], bytes):
+    unpacked_objs: List[Any] = []
+    for obj in t:
+        (result, data) = _unpack_helper(data, obj)
+        unpacked_objs.append(result)
+    return tuple(unpacked_objs), data
+
+
+def _unpack_list(data: bytes, t: List[T]) -> (List[T], bytes):
+    length = struct.unpack("i", data[:4])[0]
+    data = data[4:]
+    obj_shell = t[0]
+    t.pop()
+    for i in range(0, length):
+        (result, data) = _unpack_helper(data, obj_shell)
+        t.append(result)
+    return t, data
+
+
+def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
+    if type(obj) in unpack_dict:
+        return unpack_dict[type(obj)](obj, data)
+    else:
+        for v in vars(obj):
+            (result, data) = _unpack_helper(data, obj.__getattribute__(v))
+            obj.__dict__[v] = result
+    return obj, data
+
+
+def pack(*objs: Any) -> bytes:
+    """
+    Converts *objs* into a byte string format in order.
+
+    :param objs: Objects to be converted to byte string
+    :return: Byte string of *objs*
+    """
+    return b"".join(
+        [
+            pack_dict.get(
+                type(obj),
+                lambda o: b"".join([pack(o.__getattribute__(v)) for v in vars(o)]),
+            )(obj)
+            for obj in objs
+        ]
+    )
+
+
+def unpack(data: bytes, *objs: Any) -> Tuple[Any]:
+    """
+    Converts *data* into python objects, in the order and format of *objs*
+
+    :param data: data to be converted
+    :param objs: order and objects that data conforms to
+    :return: One object if *objs* contains one element, or tuple of objects if *objs* contains more than 1 element
+    """
+    if len(objs) == 0:
+        raise TypeError("unpack() takes a variable number of objects")
+    if len(objs) == 1:
+        return _unpack_helper(data, objs[0])[0]
+    else:
         unpacked_objs: List[Any] = []
-        for obj in t:
+        for obj in objs:
             (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
-        return tuple(unpacked_objs), data
-
-    def unpack_list(data: bytes, t: List[T]) -> (List[T], bytes):
-        length = struct.unpack("i", data[:4])[0]
-        data = data[4:]
-        obj_shell = t[0]
-        t.pop()
-        for i in range(0, length):
-            (result, data) = _unpack_helper(data, obj_shell)
-            t.append(result)
-        return t, data
-
-    def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
-        if type(obj) in unpack_dict:
-            return unpack_dict[type(obj)](obj, data)
-        else:
-            for v in vars(obj):
-                (result, data) = _unpack_helper(data, obj.__getattribute__(v))
-                obj.__dict__[v] = result
-        return obj, data
-
-    def _unpack(data: bytes, *objs: Any) -> Tuple[Any]:
-        if len(objs) == 0:
-            raise TypeError("unpack() takes a variable number of objects")
-        if len(objs) == 1:
-            return _unpack_helper(data, objs[0])[0]
-        else:
-            unpacked_objs: List[Any] = []
-            for obj in objs:
-                (result, data) = _unpack_helper(data, obj)
-                unpacked_objs.append(result)
-            return tuple(unpacked_objs)
-
-    return _unpack
-
-
-pack: Callable[[Any], bytes] = generate_pack_with_architecture()
-unpack: Callable[[bytes, Any], Tuple[Any, ...]] = generate_unpack_with_architecture()
+        return tuple(unpacked_objs)
