@@ -23,7 +23,6 @@ Release v\ |version|. (:ref:`Installation <install>`)
    
    install.rst
    api.rst
-   strict_types.rst
 
 pyparcel_ is the simple and secure way to convert objects to bytestrings. When pyparcel_ performs ``pack`` on an object, it uses
 recursive introspection on the objects variables and uses the struct_ module to pack each one in order (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
