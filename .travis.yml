@@ -10,4 +10,3 @@ install:
 - pipenv install
 script:
 - pytest
-- ./build_tools/publish_gh-pages.sh
