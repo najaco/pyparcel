@@ -1,5 +1,5 @@
 from typing import Tuple, Callable, Dict, List
-
+import codecs
 from .strict_type import *
 
 T = TypeVar("T")
@@ -8,6 +8,20 @@ global_encoding: str = "utf-8"
 
 def _lambda_raise_(ex):
     raise ex
+
+
+def check_encoding(func):
+    def func_wrapper(*args, **kwargs):
+        for key, value in kwargs.items():
+            if key == "encoding":
+                try:
+                    codecs.lookup(value)
+                except LookupError:
+                    raise Exception(f"{value} is not a proper encoding.")
+                return func(*args, **kwargs)
+        return func(*args, **kwargs)
+
+    return func_wrapper
 
 
 pack_dict: Dict[type, Callable[[Any], bytes]] = {
@@ -28,11 +42,7 @@ pack_dict: Dict[type, Callable[[Any], bytes]] = {
     Float: (lambda obj: obj.__pack__()),
     Double: (lambda obj: obj.__pack__()),
     bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
-    str: (
-        lambda obj: struct.pack(
-            "i{}s".format(len(obj)), len(obj), obj.encode(global_encoding)
-        )
-    ),
+    str: (lambda obj: pack(obj.encode(global_encoding))),
     list: (lambda obj: _pack_list(obj)),
     set: (lambda obj: _lambda_raise_(NotImplementedError)),
     dict: (lambda obj: _lambda_raise_(NotImplementedError)),
@@ -141,13 +151,16 @@ def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
     return obj, data
 
 
-def pack(*objs: Any) -> bytes:
+@check_encoding
+def pack(*objs: Any, encoding: str = "utf-8") -> bytes:
     """
     Converts *objs* into a byte string format in order.
 
     :param objs: Objects to be converted to byte string
     :return: Byte string of *objs*
     """
+    global global_encoding
+    global_encoding = encoding
     return b"".join(
         [
             pack_dict.get(
@@ -159,14 +172,18 @@ def pack(*objs: Any) -> bytes:
     )
 
 
-def unpack(data: bytes, *objs: Any) -> Tuple[Any]:
+@check_encoding
+def unpack(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
     """
     Converts *data* into python objects, in the order and format of *objs*
 
+    :param encoding: encoding for strings to be encoded in
     :param data: data to be converted
     :param objs: order and objects that data conforms to
     :return: One object if *objs* contains one element, or tuple of objects if *objs* contains more than 1 element
     """
+    global global_encoding
+    global_encoding = encoding
     if len(objs) == 0:
         raise TypeError("unpack() takes a variable number of objects")
     if len(objs) == 1:
