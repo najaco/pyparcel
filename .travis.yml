@@ -11,9 +11,6 @@ script:
   - pytest
   - make -C docs/ html
   - touch docs/build/html/.nojekyll
-after_success:
-  - coverage run --source=httpsuite -m pytest tests/
-  - coveralls
 deploy:
   - provider: pages:git
     verbose: true
