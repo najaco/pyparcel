@@ -2,7 +2,6 @@ from .api import (
     pack,
     unpack,
 )
-from .architecture import Architecture
 from .strict_type import (
     Char,
     UnsignedChar,
