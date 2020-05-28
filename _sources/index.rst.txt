@@ -14,6 +14,9 @@ pyparcel
 
 Release v\ |version|. (:ref:`Installation <install>`)
 
+.. image:: https://travis-ci.org/najaco/pyparcel.svg?branch=master
+    :target: https://travis-ci.org/najaco/pyparcel
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
