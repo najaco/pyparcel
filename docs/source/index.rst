@@ -12,10 +12,13 @@
 pyparcel
 ====================================
 
+Release v\ |version|. (:ref:`Installation <install>`)
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
    
+   install.rst
    api.rst
    strict_types.rst
 

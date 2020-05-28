@@ -21,9 +21,11 @@ project = 'pyparcel'
 copyright = '2020, Nathan Cohen'
 author = 'Nathan Cohen'
 
-# The full version, including alpha/beta/rc tags
-release = '1.0.0'
+import pyparcel
 
+version = pyparcel.__version__
+# The full version, including alpha/beta/rc tags.
+release = pyparcel.__version__
 
 # -- General configuration ---------------------------------------------------
 
