@@ -1,4 +1,5 @@
 from typing import Tuple, Callable, Dict, List
+from functools import wraps
 import codecs
 from .strict_type import *
 
@@ -11,6 +12,7 @@ def _lambda_raise_(ex):
 
 
 def check_encoding(func):
+    @wraps(func)
     def func_wrapper(*args, **kwargs):
         for key, value in kwargs.items():
             if key == "encoding":
