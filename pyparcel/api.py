@@ -156,6 +156,7 @@ def pack(*objs: Any, encoding: str = "utf-8") -> bytes:
     """
     Converts *objs* into a byte string format in order.
 
+    :param encoding: encoding for strings to be encoded in
     :param objs: Objects to be converted to byte string
     :return: Byte string of *objs*
     """
@@ -177,7 +178,7 @@ def unpack(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
     """
     Converts *data* into python objects, in the order and format of *objs*
 
-    :param encoding: encoding for strings to be encoded in
+    :param encoding: encoding that strings are encoded in
     :param data: data to be converted
     :param objs: order and objects that data conforms to
     :return: One object if *objs* contains one element, or tuple of objects if *objs* contains more than 1 element

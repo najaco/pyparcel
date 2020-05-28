@@ -32,7 +32,7 @@
             
   <h1>Source code for pyparcel.api</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-
+<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">from</span> <span class="nn">.strict_type</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
@@ -41,6 +41,20 @@
 
 <span class="k">def</span> <span class="nf">_lambda_raise_</span><span class="p">(</span><span class="n">ex</span><span class="p">):</span>
     <span class="k">raise</span> <span class="n">ex</span>
+
+
+<span class="k">def</span> <span class="nf">check_encoding</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;encoding&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">codecs</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is not a proper encoding.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">func_wrapper</span>
 
 
 <span class="n">pack_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
@@ -61,11 +75,7 @@
     <span class="n">Float</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">__pack__</span><span class="p">()),</span>
     <span class="n">Double</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">__pack__</span><span class="p">()),</span>
     <span class="nb">bytes</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;i</span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">obj</span><span class="p">)),</span>
-    <span class="nb">str</span><span class="p">:</span> <span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
-            <span class="s2">&quot;i</span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">obj</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">global_encoding</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="p">),</span>
+    <span class="nb">str</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">pack</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">global_encoding</span><span class="p">))),</span>
     <span class="nb">list</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">_pack_list</span><span class="p">(</span><span class="n">obj</span><span class="p">)),</span>
     <span class="nb">set</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">_lambda_raise_</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">)),</span>
     <span class="nb">dict</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">_lambda_raise_</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">)),</span>
@@ -174,13 +184,17 @@
     <span class="k">return</span> <span class="n">obj</span><span class="p">,</span> <span class="n">data</span>
 
 
-<div class="viewcode-block" id="pack"><a class="viewcode-back" href="../../api.html#pyparcel.pack">[docs]</a><span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<div class="viewcode-block" id="pack"><a class="viewcode-back" href="../../api.html#pyparcel.pack">[docs]</a><span class="nd">@check_encoding</span>
+<span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts *objs* into a byte string format in order.</span>
 
+<span class="sd">    :param encoding: encoding for strings to be encoded in</span>
 <span class="sd">    :param objs: Objects to be converted to byte string</span>
 <span class="sd">    :return: Byte string of *objs*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">global_encoding</span>
+    <span class="n">global_encoding</span> <span class="o">=</span> <span class="n">encoding</span>
     <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="n">pack_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -192,14 +206,18 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unpack"><a class="viewcode-back" href="../../api.html#pyparcel.unpack">[docs]</a><span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="unpack"><a class="viewcode-back" href="../../api.html#pyparcel.unpack">[docs]</a><span class="nd">@check_encoding</span>
+<span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts *data* into python objects, in the order and format of *objs*</span>
 
+<span class="sd">    :param encoding: encoding that strings are encoded in</span>
 <span class="sd">    :param data: data to be converted</span>
 <span class="sd">    :param objs: order and objects that data conforms to</span>
 <span class="sd">    :return: One object if *objs* contains one element, or tuple of objects if *objs* contains more than 1 element</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">global_encoding</span>
+    <span class="n">global_encoding</span> <span class="o">=</span> <span class="n">encoding</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unpack() takes a variable number of objects&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
