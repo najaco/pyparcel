@@ -3,8 +3,9 @@
 Strict Types
 =============
 
-
 .. module:: pyparcel
+    :noindex:
+
 
 Strict types are used to **explicity** define how certain variables are to be packed.
 
