@@ -19,7 +19,7 @@ deploy:
   local_dir: "./docs/build/html/"
   keep_history: true
   on:
-      branch: master
+    branch: master
 - provider: pypi
   username: __token__
   password: $PYPI_TOKEN
