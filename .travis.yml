@@ -1,19 +1,26 @@
 language: python
 python:
-  - "3.7"
-  - "3.8"
-  - 3.8-dev
+- '3.6'
+- '3.7'
+- '3.8'
+- 3.8-dev
 install:
-  - pip install pipenv
-  - pipenv install
+- pip install pipenv
+- pipenv install
 script:
-  - pytest
-  - make -C docs/ html
-  - touch docs/build/html/.nojekyll
+- pytest
+- make -C docs/ html
+- touch docs/build/html/.nojekyll
 deploy:
-  - provider: pages:git
-    verbose: true
-    token: $GITHUB_TOKEN
-    edge: true
-    local_dir: ./docs/build/html/
-    keep_history: true
+- provider: pages:git
+  verbose: true
+  token: $GITHUB_TOKEN
+  edge: true
+  local_dir: "./docs/build/html/"
+  keep_history: true
+- provider: pypi
+  username: __token__
+  password: $PYPI_TOKEN
+  on:
+    branch: master
+    tags: true
