@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/najaco/pyparcel.svg?branch=master)](https://travis-ci.org/najaco/pyparcel)
 
-pyparcel is a Python library to easily perform conversions between Python values and C structs represesented as Python [`bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) objects. pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes.
+pyparcel is the simple and secure way to convert objects to [`bytestrings`](https://docs.python.org/3/library/stdtypes.html#bytes). pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes and [built-in types](https://docs.python.org/3/library/stdtypes.html).
 
 ## Installation
 
@@ -34,9 +34,14 @@ baz: Foo = pyparcel.unpack(data, Foo()) # foo == baz
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+This repository follows a "fork-and-pull" workflow. If you would like to contribute perform the following:
+1. **Fork** the repostiory to your Github.
+2. **Clone** your fork to your local machine.
+3. **Checkout** a new branch with a meaningful name.
+4. **Commit** your changes to your fork.
+5. **Submit a pull request** with a description of changes and enhancements made for further review.
 
-Please make sure to update tests as appropriate.
+Check out some issues to work on in the [*issues*](https://github.com/najaco/pyparcel/issues) section.
 
 ## Documentation is available at [https://najaco.github.io/pyparcel/](https://najaco.github.io/pyparcel/)
 
