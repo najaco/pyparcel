@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/najaco/pyparcel.svg?branch=master)](https://travis-ci.org/najaco/pyparcel)
 
-pyparcel is the simple and secure way to convert objects to [`bytestrings`](https://docs.python.org/3/library/stdtypes.html#bytes). pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes and [built-in types](https://docs.python.org/3/library/stdtypes.html).
+pyparcel is the simple and secure way to convert python objects to [`bytestrings`](https://docs.python.org/3/library/stdtypes.html#bytes). pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes and [built-in types](https://docs.python.org/3/library/stdtypes.html).
 
 ## Installation
 
