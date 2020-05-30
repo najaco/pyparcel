@@ -7,7 +7,12 @@
 .. _pickle: https://docs.python.org/3/library/pickle.html
 .. _struct: https://docs.python.org/3/library/struct.html
 
+.. |bytes| raw:: html
 
+   <a href="https://docs.python.org/3/library/stdtypes.html#bytes">
+   <tt>bytes</tt></a>
+
+   
 
 pyparcel
 ====================================
@@ -27,9 +32,9 @@ Release v\ |version|. (:ref:`Installation <install>`)
    install.rst
    api.rst
 
-pyparcel_ is the simple and secure way to convert python objects to `bytestrings <https://docs.python.org/3/library/stdtypes.html#bytes>`_. When pyparcel_ performs ``pack`` on an object, it uses
-recursive introspection on the objects variables and uses the struct_ module to pack each one in order (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
-When pyparcel_ performs ``unpack`` on an data, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
+pyparcel_ is the simple and secure way to convert python objects to |bytes|. When pyparcel_ performs ``pack`` on an object, it uses
+recursive introspection on the objects variables and uses the struct_ module to pack each one in order. (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
+When pyparcel_ performs ``unpack`` on a string of |bytes|, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
 By default, ``int`` s are stored as ``"i"`` with the standard size of 4 bytes, and ``float`` s  are stored as ``"f"`` with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see :ref:`strict types<strict_types>`.
 
