@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/najaco/pyparcel.svg?branch=master)](https://travis-ci.org/najaco/pyparcel)
 [![Downloads](https://pepy.tech/badge/pyparcel)](https://pepy.tech/project/pyparcel)
 
-pyparcel is the simple and secure way to convert python objects to [`bytestrings`](https://docs.python.org/3/library/stdtypes.html#bytes). pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes and [built-in types](https://docs.python.org/3/library/stdtypes.html).
+pyparcel is the simple and secure way to convert python objects to [`bytestrings`](https://docs.python.org/3/library/stdtypes.html#bytes). pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to load classes and [built-in types](https://docs.python.org/3/library/stdtypes.html).
 
 ## Installation
 
@@ -23,14 +23,14 @@ pipenv install pyparcel
 import pyparcel
 
 foo: Foo = Foo(8, 5.7, "Hello World") # Foo(int, float, str)
-data: bytes = pyparcel.pack(foo) # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
+data: bytes = pyparcel.load(foo) # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
 
 # ...
 
 bar: Foo = Foo()
-pyparcel.unpack(data, bar) # foo == bar
+pyparcel.unload(data, bar) # foo == bar
 # or
-baz: Foo = pyparcel.unpack(data, Foo()) # foo == baz
+baz: Foo = pyparcel.unload(data, Foo()) # foo == baz
 
 ```
 

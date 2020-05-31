@@ -9,8 +9,8 @@ from .__version__ import (
 )
 
 from .api import (
-    pack,
-    unpack,
+    load,
+    unload,
 )
 from .strict_type import (
     Char,

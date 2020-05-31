@@ -110,15 +110,15 @@ DATA: List[int] = [
 
 
 class TestStrictUnsignedLong(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(UnsignedLong(i)), struct.pack("=L", i))
+            self.assertEqual(pyparcel.load(UnsignedLong(i)), struct.pack("=L", i))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
             self.assertEqual(
                 UnsignedLong(i),
-                pyparcel.unpack(pyparcel.pack(UnsignedLong(i)), UnsignedLong()),
+                pyparcel.unload(pyparcel.load(UnsignedLong(i)), UnsignedLong()),
             )
 
 

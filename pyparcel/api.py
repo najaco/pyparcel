@@ -27,9 +27,9 @@ def check_encoding(func):
 
 
 pack_dict: Dict[type, Callable[[Any], bytes]] = {
-    int: (lambda obj: pack(Int(obj))),
+    int: (lambda obj: load(Int(obj))),
     bool: (lambda obj: struct.pack("=?", obj)),
-    float: (lambda obj: pack(Float(obj))),
+    float: (lambda obj: load(Float(obj))),
     Char: (lambda obj: obj.__pack__()),
     UnsignedChar: (lambda obj: obj.__pack__()),
     SignedChar: (lambda obj: obj.__pack__()),
@@ -44,11 +44,11 @@ pack_dict: Dict[type, Callable[[Any], bytes]] = {
     Float: (lambda obj: obj.__pack__()),
     Double: (lambda obj: obj.__pack__()),
     bytes: (lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)),
-    str: (lambda obj: pack(obj.encode(global_encoding))),
+    str: (lambda obj: load(obj.encode(global_encoding))),
     list: (lambda obj: _pack_list(obj)),
     set: (lambda obj: _lambda_raise_(NotImplementedError)),
     dict: (lambda obj: _lambda_raise_(NotImplementedError)),
-    tuple: (lambda obj: pack(*obj)),
+    tuple: (lambda obj: load(*obj)),
 }
 
 unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
@@ -86,9 +86,9 @@ def _pack_list(li: List[T]) -> bytes:
     :return: Packed byte string of *list*
     """
     if len(li) == 0:
-        return pack(len(li))
+        return load(len(li))
     conformed_list = _conform_list(li)
-    return b"".join([pack(i) for i in [len(conformed_list)] + conformed_list])
+    return b"".join([load(i) for i in [len(conformed_list)] + conformed_list])
 
 
 def _conform_list(li: List[Any]) -> List[T]:
@@ -154,7 +154,7 @@ def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
 
 
 @check_encoding
-def pack(*objs: Any, encoding: str = "utf-8") -> bytes:
+def load(*objs: Any, encoding: str = "utf-8") -> bytes:
     """
     Converts *objs* into a byte string format in order.
 
@@ -168,7 +168,7 @@ def pack(*objs: Any, encoding: str = "utf-8") -> bytes:
         [
             pack_dict.get(
                 type(obj),
-                lambda o: b"".join([pack(o.__getattribute__(v)) for v in vars(o)]),
+                lambda o: b"".join([load(o.__getattribute__(v)) for v in vars(o)]),
             )(obj)
             for obj in objs
         ]
@@ -176,7 +176,7 @@ def pack(*objs: Any, encoding: str = "utf-8") -> bytes:
 
 
 @check_encoding
-def unpack(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
+def unload(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
     """
     Converts *data* into python objects, in the order and format of *objs*
 
@@ -188,7 +188,7 @@ def unpack(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
     global global_encoding
     global_encoding = encoding
     if len(objs) == 0:
-        raise TypeError("unpack() takes a variable number of objects")
+        raise TypeError("unload() takes a variable number of objects")
     if len(objs) == 1:
         return _unpack_helper(data, objs[0])[0]
     else:

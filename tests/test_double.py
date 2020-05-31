@@ -24,14 +24,14 @@ DATA: List[int] = [
 
 
 class TestStrictDouble(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(Double(i)), struct.pack("=d", i))
+            self.assertEqual(pyparcel.load(Double(i)), struct.pack("=d", i))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
             self.assertEqual(
-                Double(i), pyparcel.unpack(pyparcel.pack(Double(i)), Double()),
+                Double(i), pyparcel.unload(pyparcel.load(Double(i)), Double()),
             )
 
 
