@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>API &#8212; pyparcel 0.9.22 documentation</title>
+    <title>API &#8212; pyparcel 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -36,8 +36,8 @@
 <span class="target" id="module-pyparcel"></span><div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pyparcel.pack">
-<code class="sig-prename descclassname">pyparcel.</code><code class="sig-name descname">pack</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span> &#x2192; bytes<a class="reference internal" href="_modules/pyparcel/api.html#pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyparcel.pack" title="Permalink to this definition">¶</a></dt>
+<dt id="pyparcel.load">
+<code class="sig-prename descclassname">pyparcel.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span> &#x2192; bytes<a class="reference internal" href="_modules/pyparcel/api.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyparcel.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts <em>objs</em> into a byte string format in order.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -53,8 +53,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="pyparcel.unpack">
-<code class="sig-prename descclassname">pyparcel.</code><code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Any<span class="p">]</span><a class="reference internal" href="_modules/pyparcel/api.html#unpack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyparcel.unpack" title="Permalink to this definition">¶</a></dt>
+<dt id="pyparcel.unload">
+<code class="sig-prename descclassname">pyparcel.</code><code class="sig-name descname">unload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">objs</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'utf-8'</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Any<span class="p">]</span><a class="reference internal" href="_modules/pyparcel/api.html#unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyparcel.unload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts <em>data</em> into python objects, in the order and format of <em>objs</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -7,8 +7,8 @@ API
 
 Functions
 ##########
-.. autofunction:: pack
-.. autofunction:: unpack
+.. autofunction:: load
+.. autofunction:: unload
 
 .. _strict_types:
 

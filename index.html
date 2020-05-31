@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>pyparcel &#8212; pyparcel 0.9.22 documentation</title>
+    <title>pyparcel &#8212; pyparcel 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -33,7 +33,7 @@
             
   <div class="section" id="id1">
 <h1>pyparcel<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-<p>Release v0.9.22. (<a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a>)</p>
+<p>Release v1.0.0 (<a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a>)</p>
 <a class="reference external image-reference" href="https://travis-ci.org/najaco/pyparcel"><img alt="https://travis-ci.org/najaco/pyparcel.svg?branch=master" src="https://travis-ci.org/najaco/pyparcel.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://pepy.tech/project/pyparcel"><img alt="https://pepy.tech/badge/pyparcel" src="https://pepy.tech/badge/pyparcel" /></a>
 <div class="toctree-wrapper compound">
@@ -53,9 +53,9 @@
 </ul>
 </div>
 <p><a class="reference external" href="./index.html">pyparcel</a> is the simple and secure way to convert python objects to <a href="https://docs.python.org/3/library/stdtypes.html#bytes">
-<tt>bytes</tt></a>. When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">pack</span></code> on an object, it uses
-recursive introspection on the objects variables and uses the <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> module to pack each one in order. (some additional rules may apply on dynamic data structures, e.g. <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, etc.)
-When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">unpack</span></code> on a string of <a href="https://docs.python.org/3/library/stdtypes.html#bytes">
+<tt>bytes</tt></a>. When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">load</span></code> on an object, it uses
+recursive introspection on the objects variables and uses the <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> module to load each one in order. (some additional rules may apply on dynamic data structures, e.g. <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, etc.)
+When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">unload</span></code> on a string of <a href="https://docs.python.org/3/library/stdtypes.html#bytes">
 <tt>bytes</tt></a>, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
 By default, <code class="docutils literal notranslate"><span class="pre">int</span></code> s are stored as <code class="docutils literal notranslate"><span class="pre">&quot;i&quot;</span></code> with the standard size of 4 bytes, and <code class="docutils literal notranslate"><span class="pre">float</span></code> s  are stored as <code class="docutils literal notranslate"><span class="pre">&quot;f&quot;</span></code> with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see <a class="reference internal" href="api.html#strict-types"><span class="std std-ref">strict types</span></a>.</p>
@@ -64,9 +64,9 @@ If you would like to change how specific values are stored, see <a class="refere
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyparcel</span>
 
 <span class="n">foo</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">5.7</span><span class="p">,</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">)</span>  <span class="c1"># Foo(int, float, str)</span>
-<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>  <span class="c1"># b&#39;\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>  <span class="c1"># b&#39;\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World&#39;</span>
 <span class="c1"># ...</span>
-<span class="n">baz</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Foo</span><span class="p">())</span>  <span class="c1"># foo == baz</span>
+<span class="n">baz</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">unload</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Foo</span><span class="p">())</span>  <span class="c1"># foo == baz</span>
 </pre></div>
 </div>
 </div>
