@@ -17,17 +17,17 @@ DATA = [
 
 
 class TestVarArgs(unittest.TestCase):
-    def test_same_pack(self):
+    def test_same_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(*i), struct.pack("=" + ("i" * len(i)), *i))
+            self.assertEqual(pyparcel.load(*i), struct.pack("=" + ("i" * len(i)), *i))
 
-    def test_same_pack_unpack(self):
+    def test_same_load_unload(self):
         for i in DATA:
-            self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), *[int()] * len(i)))
+            self.assertEqual(i, pyparcel.unload(pyparcel.load(i), *[int()] * len(i)))
 
-    def test_diff_pack_unpack(self):
-        data = pyparcel.pack(1, 2, 3.5)
-        self.assertEqual((1, 2, 3.5), pyparcel.unpack(data, int(), int(), float()))
+    def test_diff_load_unload(self):
+        data = pyparcel.load(1, 2, 3.5)
+        self.assertEqual((1, 2, 3.5), pyparcel.unload(data, int(), int(), float()))
 
 
 if __name__ == "__main__":

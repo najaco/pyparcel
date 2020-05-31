@@ -14,6 +14,6 @@ class Foo:
 
 
 foo: Foo = Foo(8, 5.7, "Hello World")  # Foo(int, float, str)
-data: bytes = pyparcel.pack(foo)  # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
+data: bytes = pyparcel.load(foo)  # b'\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World'
 # ...
-baz: Foo = pyparcel.unpack(data, Foo())  # foo == baz
+baz: Foo = pyparcel.unload(data, Foo())  # foo == baz

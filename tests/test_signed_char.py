@@ -9,16 +9,16 @@ DATA = range(0, 128)
 
 
 class TestStrictSignedShort(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
             y = struct.pack("=b", i)
-            self.assertEqual(pyparcel.pack(SignedChar(i)), y)
+            self.assertEqual(pyparcel.load(SignedChar(i)), y)
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
             self.assertEqual(
                 SignedChar(i),
-                pyparcel.unpack(pyparcel.pack(SignedChar(i)), SignedChar()),
+                pyparcel.unload(pyparcel.load(SignedChar(i)), SignedChar()),
             )
 
 

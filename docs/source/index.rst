@@ -17,7 +17,7 @@
 pyparcel
 ====================================
 
-Release v\ |version|. (:ref:`Installation <install>`)
+Release v\ |version| (:ref:`Installation <install>`)
 
 .. image:: https://travis-ci.org/najaco/pyparcel.svg?branch=master
     :target: https://travis-ci.org/najaco/pyparcel
@@ -32,9 +32,9 @@ Release v\ |version|. (:ref:`Installation <install>`)
    install.rst
    api.rst
 
-pyparcel_ is the simple and secure way to convert python objects to |bytes|. When pyparcel_ performs ``pack`` on an object, it uses
-recursive introspection on the objects variables and uses the struct_ module to pack each one in order. (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
-When pyparcel_ performs ``unpack`` on a string of |bytes|, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
+pyparcel_ is the simple and secure way to convert python objects to |bytes|. When pyparcel_ performs ``load`` on an object, it uses
+recursive introspection on the objects variables and uses the struct_ module to load each one in order. (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
+When pyparcel_ performs ``unload`` on a string of |bytes|, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
 By default, ``int`` s are stored as ``"i"`` with the standard size of 4 bytes, and ``float`` s  are stored as ``"f"`` with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see :ref:`strict types<strict_types>`.
 

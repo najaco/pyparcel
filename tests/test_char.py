@@ -9,15 +9,15 @@ DATA = [chr(i) for i in range(0, 128)]
 
 
 class TestStrictChar(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
             self.assertEqual(
-                pyparcel.pack(Char(i)), struct.pack("=c", i.encode("ascii"))
+                pyparcel.load(Char(i)), struct.pack("=c", i.encode("ascii"))
             )
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
-            self.assertEqual(Char(i), pyparcel.unpack(pyparcel.pack(Char(i)), Char()))
+            self.assertEqual(Char(i), pyparcel.unload(pyparcel.load(Char(i)), Char()))
 
 
 if __name__ == "__main__":

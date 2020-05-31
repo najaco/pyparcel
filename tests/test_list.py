@@ -7,16 +7,16 @@ from pyparcel import Long, Int, LongLong, UnsignedShort
 
 
 class TestList(unittest.TestCase):
-    def test_pack_1(self):
+    def test_load_1(self):
         data = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
         self.assertEqual(
-            pyparcel.pack(data),
+            pyparcel.load(data),
             struct.pack("=i", len(data)) + struct.pack("=" + "i" * len(data), *data),
         )
 
-    def test_pack_unpack_1(self):
+    def test_load_unload_1(self):
         data = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
-        self.assertEqual(data, pyparcel.unpack(pyparcel.pack(data), [int()]))
+        self.assertEqual(data, pyparcel.unload(pyparcel.load(data), [int()]))
 
     def test_inconsistent_types_raises_exception(self):
         data = [
@@ -26,7 +26,7 @@ class TestList(unittest.TestCase):
             [43, "Hello", "World"],
         ]
         for d in data:
-            self.assertRaises(Exception, pyparcel.pack, d)
+            self.assertRaises(Exception, pyparcel.load, d)
 
     def test_list_conform_does_not_raise_exception(self):
         data = [
@@ -39,9 +39,9 @@ class TestList(unittest.TestCase):
         ]
         for d in data:
             try:
-                pyparcel.pack(d)
+                pyparcel.load(d)
             except Exception:
-                self.fail(f"pyparcel.pack({d}) raised Exception unexpectedly.")
+                self.fail(f"pyparcel.load({d}) raised Exception unexpectedly.")
 
 
 if __name__ == "__main__":

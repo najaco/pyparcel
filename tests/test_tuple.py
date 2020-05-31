@@ -17,28 +17,28 @@ DATA = [
 
 
 class TestTuple(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(i), struct.pack("i" * len(i), *i))
+            self.assertEqual(pyparcel.load(i), struct.pack("i" * len(i), *i))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
             self.assertEqual(
-                i, pyparcel.unpack(pyparcel.pack(i), tuple([int()] * len(i)))
+                i, pyparcel.unload(pyparcel.load(i), tuple([int()] * len(i)))
             )
 
-    def test_tuple_of_tuple_pack_unpack(self):
+    def test_tuple_of_tuple_load_unload(self):
         structure = tuple(
             [tuple([int()] * i) for i in range(len(DATA[0]), len(DATA[-1]) + 1)]
         )
         self.assertEqual(
-            tuple(DATA), pyparcel.unpack(pyparcel.pack(tuple(DATA)), structure)
+            tuple(DATA), pyparcel.unload(pyparcel.load(tuple(DATA)), structure)
         )
 
     def simple_test(self):
         self.assertEqual(
             tuple(1, 2, 3),
-            pyparcel.unpack(pyparcel.pack(tuple(1, 2, 3)), tuple(int(), int(), int())),
+            pyparcel.unload(pyparcel.load(tuple(1, 2, 3)), tuple(int(), int(), int())),
         )
 
 

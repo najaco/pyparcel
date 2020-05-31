@@ -121,35 +121,35 @@ DATA: List[int] = [
 
 
 class TestDefaultInt(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(i), struct.pack("=i", i))
+            self.assertEqual(pyparcel.load(i), struct.pack("=i", i))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
-            self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), int()))
+            self.assertEqual(i, pyparcel.unload(pyparcel.load(i), int()))
 
 
 class TestStrictInt(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(Int(i)), struct.pack("=i", i))
+            self.assertEqual(pyparcel.load(Int(i)), struct.pack("=i", i))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
-            self.assertEqual(Int(i), pyparcel.unpack(pyparcel.pack(Int(i)), Int()))
+            self.assertEqual(Int(i), pyparcel.unload(pyparcel.load(Int(i)), Int()))
 
 
 class TestDefaultMatchesStrict(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(i), pyparcel.pack(Int(i)))
+            self.assertEqual(pyparcel.load(i), pyparcel.load(Int(i)))
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
             self.assertEqual(
-                pyparcel.unpack(pyparcel.pack(i), int()),
-                pyparcel.unpack(pyparcel.pack(Int(i)), Int()),
+                pyparcel.unload(pyparcel.load(i), int()),
+                pyparcel.unload(pyparcel.load(Int(i)), Int()),
             )
 
 
