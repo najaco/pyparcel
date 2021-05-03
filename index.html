@@ -3,7 +3,8 @@
 
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>pyparcel &#8212; pyparcel 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -31,13 +32,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="id1">
+  <section id="id1">
 <h1>pyparcel<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>Release v1.0.0 (<a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a>)</p>
 <a class="reference external image-reference" href="https://travis-ci.org/najaco/pyparcel"><img alt="https://travis-ci.org/najaco/pyparcel.svg?branch=master" src="https://travis-ci.org/najaco/pyparcel.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://pepy.tech/project/pyparcel"><img alt="https://pepy.tech/badge/pyparcel" src="https://pepy.tech/badge/pyparcel" /></a>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install pyparcel</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html#pip">pip</a></li>
@@ -59,7 +60,7 @@ When <a class="reference external" href="./index.html">pyparcel</a> performs <co
 <tt>bytes</tt></a>, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
 By default, <code class="docutils literal notranslate"><span class="pre">int</span></code> s are stored as <code class="docutils literal notranslate"><span class="pre">&quot;i&quot;</span></code> with the standard size of 4 bytes, and <code class="docutils literal notranslate"><span class="pre">float</span></code> s  are stored as <code class="docutils literal notranslate"><span class="pre">&quot;f&quot;</span></code> with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see <a class="reference internal" href="api.html#strict-types"><span class="std std-ref">strict types</span></a>.</p>
-<div class="section" id="example">
+<section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyparcel</span>
 
@@ -69,24 +70,24 @@ If you would like to change how specific values are stored, see <a class="refere
 <span class="n">baz</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">unload</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Foo</span><span class="p">())</span>  <span class="c1"># foo == baz</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="comparison-to-other-modules">
+</section>
+<section id="comparison-to-other-modules">
 <h2>Comparison to other modules<a class="headerlink" href="#comparison-to-other-modules" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="comparison-to-pickle">
+<section id="comparison-to-pickle">
 <h3>Comparison to <a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickle</a><a class="headerlink" href="#comparison-to-pickle" title="Permalink to this headline">¶</a></h3>
 <p>While <a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickle</a> is great for <em>convenience</em>, it also lacks <em>security</em> because it allows the execution of <em>arbitrary functions</em>.
 <a class="reference external" href="./index.html">pyparcel</a> is different because the user knows what objects are expected when unpacking the byte string. <a class="reference external" href="./index.html">pyparcel</a> recursively introspects the passed object and fills
 the instance variables with what was given in the byte string.</p>
-</div>
-<div class="section" id="comparison-to-struct">
+</section>
+<section id="comparison-to-struct">
 <h3>Comparison to <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a><a class="headerlink" href="#comparison-to-struct" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> is not as scalable as <a class="reference external" href="./index.html">pyparcel</a>. <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> requires you to specify the order and way data is packed,
 and does not allow you to pack objects without deconstructing it first. While it may be faster during runtime, it requires the developer to change code in multiple places,
 if they decide to customize the data they are passing. <a class="reference external" href="./index.html">pyparcel</a> acts as a <em>wrapper</em> around <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a>, allowing objects to be converted to byte strings, since the <em>format specifier</em> for <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a>
 is decided at runtime.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -105,7 +106,7 @@ is decided at runtime.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install pyparcel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
