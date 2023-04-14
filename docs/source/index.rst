@@ -24,7 +24,7 @@ Release v\ |version|. (:ref:`Installation <install>`)
    install.rst
    api.rst
 
-pyparcel_ is the simple and secure way to convert objects to bytestrings. When pyparcel_ performs ``pack`` on an object, it uses
+pyparcel_ is the simple and secure way to convert python objects to `bytestrings <https://docs.python.org/3/library/stdtypes.html#bytes>`_. When pyparcel_ performs ``pack`` on an object, it uses
 recursive introspection on the objects variables and uses the struct_ module to pack each one in order (some additional rules may apply on dynamic data structures, e.g. ``str``, ``list``, etc.)
 When pyparcel_ performs ``unpack`` on an data, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
 By default, ``int`` s are stored as ``"i"`` with the standard size of 4 bytes, and ``float`` s  are stored as ``"f"`` with a standard size of 4 bytes.
