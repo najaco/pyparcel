@@ -27,7 +27,7 @@ If you would like to change how specific values are stored, see :ref:`strict typ
 
 Example
 ###################################################
-.. literalinclude:: ../examples/readme_example.py
+.. literalinclude:: ../../examples/readme_example.py
     :language: python
     :lines: 1, 15-19
 
