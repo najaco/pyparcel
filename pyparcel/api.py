@@ -1,12 +1,9 @@
-from typing import Generic, List, TypeVar, Tuple, Any
+import struct
+from typing import TypeVar, Tuple, Any, Callable
+
 from .architecture import Architecture
 
-import struct
-
 T = TypeVar("T")
-INT_MAX = (1 << 31) - 1
-INT_MIN = -1 << 31
-ENCODING = "utf-8"
 
 
 def raise_(ex):
@@ -16,7 +13,9 @@ def raise_(ex):
 X86_ARCHITECTURE: Architecture = Architecture()
 
 
-def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
+def generate_pack_with_architecture(
+    arc: Architecture = X86_ARCHITECTURE,
+) -> Callable[[Any], bytes]:
     pack_dict = {
         int: (lambda obj: struct.pack(arc.format_of(int), obj)),
         bool: (lambda obj: struct.pack(arc.format_of(bool), obj)),
@@ -30,7 +29,7 @@ def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
             lambda obj: struct.pack(
                 "i" + arc.format_of(str).format(len(obj)),
                 len(obj),
-                obj.encode(ENCODING),
+                obj.encode(arc.encoding),
             )
         ),
         list: (lambda obj: b"".join([_pack(x) for x in vars(obj)])),
@@ -39,7 +38,7 @@ def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
         tuple: (lambda obj: _pack(*obj)),
     }
 
-    def _pack(*objs) -> bytes:
+    def _pack(*objs: Any) -> bytes:
         return b"".join(
             [
                 pack_dict.get(
@@ -53,7 +52,9 @@ def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
     return _pack
 
 
-def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
+def generate_unpack_with_architecture(
+    arc: Architecture = X86_ARCHITECTURE,
+) -> Callable[[bytes, Any], Tuple[Any, ...]]:
     unpack_dict = {
         int: (
             lambda _, data: (
@@ -83,7 +84,7 @@ def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
 
     def unpack_string(data: bytes) -> (str, bytes):
         result, data = unpack_bytes(data)
-        return result.decode(ENCODING), data
+        return result.decode(arc.encoding), data
 
     def unpack_bytes(data: bytes) -> (bytes, bytes):
         length = struct.unpack(
@@ -111,7 +112,7 @@ def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
                 obj.__dict__[v] = result
         return obj, data
 
-    def _unpack(data: bytes, *objs) -> Tuple[Any]:
+    def _unpack(data: bytes, *objs: Any) -> Tuple[Any]:
         if len(objs) == 0:
             raise TypeError("unpack() takes a variable number of objects")
         if len(objs) == 1:
@@ -126,5 +127,5 @@ def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
     return _unpack
 
 
-pack = generate_pack_with_architecture()
-unpack = generate_unpack_with_architecture()
+pack: Callable[[Any], bytes] = generate_pack_with_architecture()
+unpack: Callable[[bytes, Any], Tuple[Any, ...]] = generate_unpack_with_architecture()
