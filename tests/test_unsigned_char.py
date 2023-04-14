@@ -8,17 +8,19 @@ from pyparcel.strict_type import UnsignedChar
 DATA = range(0, 128)
 
 
-class MyTestCase(unittest.TestCase):
-
+class TestStrictUnsignedChar(unittest.TestCase):
     def test_pack(self):
         for i in DATA:
-            y = struct.pack('B', i)
+            y = struct.pack("=B", i)
             self.assertEqual(pyparcel.pack(UnsignedChar(i)), y)
 
     def test_pack_unpack(self):
         for i in DATA:
-            self.assertEqual(UnsignedChar(i), pyparcel.unpack(pyparcel.pack(UnsignedChar(i)), UnsignedChar()))
+            self.assertEqual(
+                UnsignedChar(i),
+                pyparcel.unpack(pyparcel.pack(UnsignedChar(i)), UnsignedChar()),
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

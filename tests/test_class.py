@@ -36,13 +36,13 @@ DATA: List[ExampleClassA] = [
 ]
 
 
-class MyTestCase(unittest.TestCase):
+class TestClass(unittest.TestCase):
     def test_pack(self):
         for o in DATA:
             self.assertEqual(
                 pyparcel.pack(o),
                 struct.pack(
-                    "ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "=ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
                 ),
             )
 
