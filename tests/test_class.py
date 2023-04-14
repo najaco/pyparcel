@@ -42,7 +42,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(
                 pyparcel.pack(o),
                 struct.pack(
-                    "ifq{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
                 ),
             )
 
