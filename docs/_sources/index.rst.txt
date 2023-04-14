@@ -25,7 +25,7 @@ When pyparcel_ performs ``unpack`` on an data, it again performs recursive intro
 By default, ``int`` s are stored as ``"i"`` with the standard size of 4 bytes, and ``float`` s  are stored as ``"f"`` with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see :ref:`strict types<strict_types>`.
 
-Example `[src] <../examples/readme_example.py>`_
+Example
 ###################################################
 .. literalinclude:: ../examples/readme_example.py
     :language: python
