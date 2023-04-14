@@ -31,7 +31,6 @@ Types                   # Bytes      Format Specifier
 Example
 ########
 .. literalinclude:: ../examples/strict_class_example.py
-    :linenos:
     :language: python
     :lines: 1-9
 
