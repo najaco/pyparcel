@@ -10,13 +10,40 @@ ENCODING = "utf-8"
 def raise_(ex):
     raise ex
 
+class Architecture:
 
-size_dict = {
-    int: 4,
-    bool: 1,
-    float: 4,
-    "str_length": 4,
-}
+    def __init__(self, sint:int = 4, sbool: int = 1, sfloat: int = 4, str_length: int = 4):
+        self._data = {}
+        self._data[int] = sint
+        self._data[bool] = sbool
+        self._data[float] = sfloat
+        self._data["str_length"] = str_length
+
+    def __getitem__(self, key: Any) -> int:
+        if key not in self._data:
+            raise IndexError
+
+        return self._data[key]
+
+class ConfigManager:
+    def __init__(self, size_config: Architecture = Architecture()):
+        self._size_config = size_config
+
+    @property
+    def Architecture(self) -> Architecture:
+        return self._size_config
+
+    @Architecture.setter
+    def Architecture(self, size_config: Architecture) -> None:
+        self._size_config = size_config
+
+config_manager: ConfigManager = ConfigManager()
+
+def configure(architecture: Architecture) -> None:
+    config_manager.SizeConfig = architecture
+
+X86_ARCHITECTURE: Architecture = Architecture()  
+
 # find a way to set default size for int
 pack_dict = {
     int: (
@@ -37,20 +64,20 @@ pack_dict = {
 unpack_dict = {
     int: (
         lambda _, data: (
-            struct.unpack("i", data[: size_dict[int]])[0],
-            data[size_dict[int] :],
+            struct.unpack("i", data[: config_manager.SizeConfig[int]])[0],
+            data[config_manager.SizeConfig[int] :],
         )
     ),
     bool: (
         lambda _, data: (
-            struct.unpack("?", data[: size_dict[bool]])[0],
-            data[size_dict[bool] :],
+            struct.unpack("?", data[: config_manager.SizeConfig[bool]])[0],
+            data[config_manager.SizeConfig[bool] :],
         )
     ),
     float: (
         lambda _, data: (
-            struct.unpack("f", data[: size_dict[float]])[0],
-            data[size_dict[float] :],
+            struct.unpack("f", data[: config_manager.SizeConfig[float]])[0],
+            data[config_manager.SizeConfig[float] :],
         )
     ),
     bytes: (lambda _, data: unpack_bytes(data)),
@@ -68,8 +95,8 @@ def unpack_string(data: bytes) -> (str, bytes):
 
 
 def unpack_bytes(data: bytes) -> (bytes, bytes):
-    length = struct.unpack("i", data[: size_dict["str_length"]])[0]
-    data = data[size_dict["str_length"] :]
+    length = struct.unpack("i", data[: config_manager.SizeConfig["str_length"]])[0]
+    data = data[config_manager.SizeConfig["str_length"] :]
     return struct.unpack("{}s".format(length), data[:length])[0], data[length:]
 
 
