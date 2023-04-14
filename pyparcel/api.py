@@ -13,26 +13,9 @@ def raise_(ex):
     raise ex
 
 
-# class ConfigManager:
-#     def __init__(self, size_config: Architecture = Architecture()):
-#         self._size_config = size_config
-
-#     @property
-#     def Architecture(self) -> Architecture:
-#         return self._size_config
-
-#     @Architecture.setter
-#     def Architecture(self, size_config: Architecture) -> None:
-#         self._size_config = size_config
-
-# config_manager: ConfigManager = ConfigManager()
-
-# def configure(architecture: Architecture) -> None:
-#     config_manager.SizeConfig = architecture
-
 X86_ARCHITECTURE: Architecture = Architecture()
 
-# find a way to set default size for int
+
 def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
     pack_dict = {
         int: (lambda obj: struct.pack(arc.format_of(int), obj)),
@@ -50,24 +33,24 @@ def generate_pack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
                 obj.encode(ENCODING),
             )
         ),
-        list: (lambda obj: b"".join([pack(x) for x in vars(obj)])),
+        list: (lambda obj: b"".join([_pack(x) for x in vars(obj)])),
         set: (lambda obj: raise_(NotImplementedError)),
         dict: (lambda obj: raise_(NotImplementedError)),
-        tuple: (lambda obj: pack(*obj)),
+        tuple: (lambda obj: _pack(*obj)),
     }
 
-    def pack(*objs) -> bytes:
+    def _pack(*objs) -> bytes:
         return b"".join(
             [
                 pack_dict.get(
                     type(obj),
-                    lambda o: b"".join([pack(o.__getattribute__(x)) for x in vars(o)]),
+                    lambda o: b"".join([_pack(o.__getattribute__(x)) for x in vars(o)]),
                 )(obj)
                 for obj in objs
             ]
         )
 
-    return pack
+    return _pack
 
 
 def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
@@ -115,32 +98,32 @@ def generate_unpack_with_architecture(arc: Architecture = X86_ARCHITECTURE):
     def unpack_tuple(data: bytes, t: Tuple[Any]) -> (Tuple[Any], bytes):
         unpacked_objs = []
         for obj in t:
-            (result, data) = _unpack(data, obj)
+            (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
         return tuple(unpacked_objs), data
 
-    def _unpack(data: bytes, obj: T) -> (T, bytes):
+    def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
         if type(obj) in unpack_dict:
             return unpack_dict[type(obj)](obj, data)
         else:
             for v in vars(obj):
-                (result, data) = _unpack(data, obj.__getattribute__(v))
+                (result, data) = _unpack_helper(data, obj.__getattribute__(v))
                 obj.__dict__[v] = result
         return obj, data
 
-    def unpack(data: bytes, *objs) -> Tuple[Any]:
+    def _unpack(data: bytes, *objs) -> Tuple[Any]:
         if len(objs) == 0:
             raise TypeError("unpack() takes a variable number of objects")
         if len(objs) == 1:
-            return _unpack(data, objs[0])[0]
+            return _unpack_helper(data, objs[0])[0]
         else:
             unpacked_objs = []
             for obj in objs:
-                (result, data) = _unpack(data, obj)
+                (result, data) = _unpack_helper(data, obj)
                 unpacked_objs.append(result)
             return tuple(unpacked_objs)
 
-    return unpack
+    return _unpack
 
 
 pack = generate_pack_with_architecture()

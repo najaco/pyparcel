@@ -21,7 +21,7 @@ class Architecture:
             "str_length": str_length,
         }
 
-    def __getitem__(self, key: Any) -> int:
+    def __getitem__(self, key: Any) -> StrictType:
         if key not in self._data:
             raise IndexError
         return self._data[key]
