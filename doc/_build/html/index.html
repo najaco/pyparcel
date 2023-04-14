@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>pyparcel &#8212; pyparcel 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>pyparcel<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="strict_types.html">Strict Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="strict_types.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strict_types.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><a class="reference external" href="./index.html">pyparcel</a> is the simple and secure way to convert objects to bytestrings. When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">pack</span></code> on an object, it uses
+recursive introspection on the objects variables and uses the <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> module to pack each one in order (some additional rules may apply on dynamic data structures, e.g. <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, etc.)
+When <a class="reference external" href="./index.html">pyparcel</a> performs <code class="docutils literal notranslate"><span class="pre">unpack</span></code> on an data, it again performs recursive introspection and fills variables passed with what is apparent in the byte string.
+By default, <code class="docutils literal notranslate"><span class="pre">int</span></code> s are stored as <code class="docutils literal notranslate"><span class="pre">&quot;i&quot;</span></code> with the standard size of 4 bytes, and <code class="docutils literal notranslate"><span class="pre">float</span></code> s  are stored as <code class="docutils literal notranslate"><span class="pre">&quot;f&quot;</span></code> with a standard size of 4 bytes.
+If you would like to change how specific values are stored, see <a class="reference internal" href="strict_types.html#strict-types"><span class="std std-ref">strict types</span></a>.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyparcel</span>
+
+<span class="n">foo</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">5.7</span><span class="p">,</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">)</span>  <span class="c1"># Foo(int, float, str)</span>
+<span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>  <span class="c1"># b&#39;\x08\x00\x00\x00ff\xb6@\x0b\x00\x00\x00Hello World&#39;</span>
+<span class="c1"># ...</span>
+<span class="n">baz</span><span class="p">:</span> <span class="n">Foo</span> <span class="o">=</span> <span class="n">pyparcel</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Foo</span><span class="p">())</span>  <span class="c1"># foo == baz</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="comparison-to-other-modules">
+<h2>Comparison to other modules<a class="headerlink" href="#comparison-to-other-modules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="comparison-to-pickle">
+<h3>Comparison to <a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickle</a><a class="headerlink" href="#comparison-to-pickle" title="Permalink to this headline">¶</a></h3>
+<p>While <a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickle</a> is great for <em>convenience</em>, it also lacks <em>security</em> because it allows the execution of <em>arbitrary functions</em>.
+<a class="reference external" href="./index.html">pyparcel</a> is different because the user knows what objects are expected when unpacking the byte string. <a class="reference external" href="./index.html">pyparcel</a> recursively introspects the passed object and fills
+the instance variables with what was given in the byte string.</p>
+</div>
+<div class="section" id="comparison-to-struct">
+<h3>Comparison to <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a><a class="headerlink" href="#comparison-to-struct" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> is not as scalable as <a class="reference external" href="./index.html">pyparcel</a>. <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a> requires you to specify the order and way data is packed,
+and does not allow you to pack objects without deconstructing it first. While it may be faster during runtime, it requires the developer to change code in multiple places,
+if they decide to customize the data they are passing. <a class="reference external" href="./index.html">pyparcel</a> acts as a <em>wrapper</em> around <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a>, allowing objects to be converted to byte strings, since the <em>format specifier</em> for <a class="reference external" href="https://docs.python.org/3/library/struct.html">struct</a>
+is decided at runtime.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">pyparcel</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strict_types.html">Strict Types</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Nathan Cohen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
