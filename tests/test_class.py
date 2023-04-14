@@ -1,8 +1,7 @@
 import struct
 import unittest
 from typing import Dict, List
-from tests.config import FLOATING_POINT_ACCURACY, ENCODING
-
+from tests.config import FLOATING_POINT_ACCURACY
 
 import pyparcel
 
@@ -42,7 +41,11 @@ class TestClass(unittest.TestCase):
             self.assertEqual(
                 pyparcel.pack(o),
                 struct.pack(
-                    "=ifi{}s".format(len(o.c)), o.a, o.b, len(o.c), o.c.encode(ENCODING)
+                    "=ifi{}s".format(len(o.c.encode("utf-8"))),
+                    o.a,
+                    o.b,
+                    len(o.c.encode("utf-8")),
+                    o.c.encode("utf-8"),
                 ),
             )
 
