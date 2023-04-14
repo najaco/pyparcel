@@ -28,9 +28,9 @@ Types                   # Bytes      Format Specifier
 ``Double``               8            ``"d"``
 ====================   ==========   ==================
 
-Example
-########
-.. literalinclude:: ../../examples/strict_class_example.py
+Example `[src] <../examples/strict_class_example.py>`_
+#######################################################
+.. literalinclude:: ../examples/strict_class_example.py
     :language: python
     :lines: 1-9
 
