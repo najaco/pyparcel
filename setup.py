@@ -1,11 +1,12 @@
 import setuptools
+import pyparcel
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="pyparcel",
-    version="0.0.4",
+    version=pyparcel.__version__,
     author="Nathan Cohen",
     author_email="ncohen4299@gmail.com",
     description="Easy to use binary packer that doesn't require struct's specifications",
