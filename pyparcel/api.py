@@ -1,5 +1,6 @@
 import struct
 from typing import TypeVar, Tuple, Any, Callable, Dict, List
+from .strict_type import *
 
 from .architecture import Architecture
 
@@ -14,23 +15,31 @@ X86_ARCHITECTURE: Architecture = Architecture()
 
 
 def generate_pack_with_architecture(
-    arc: Architecture = X86_ARCHITECTURE,
+        arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[Any], bytes]:
     pack_dict: Dict[type, Callable[[Any], bytes]] = {
-        int: (lambda obj: struct.pack(arc.format_of(int), obj)),
-        bool: (lambda obj: struct.pack(arc.format_of(bool), obj)),
-        float: (lambda obj: struct.pack(arc.format_of(float), obj)),
+        int: (lambda obj: _pack(Int(obj))),
+        bool: (lambda obj: struct.pack("=?", obj)),
+        float: (lambda obj: _pack(Float(obj))),
+        Char: (lambda obj: obj.__pack__()),
+        UnsignedChar: (lambda obj: obj.__pack__()),
+        SignedChar: (lambda obj: obj.__pack__()),
+        Short: (lambda obj: obj.__pack__()),
+        UnsignedShort: (lambda obj: obj.__pack__()),
+        Int: (lambda obj: obj.__pack__()),
+        UnsignedInt: (lambda obj: obj.__pack__()),
+        Long: (lambda obj: obj.__pack__()),
+        UnsignedLong: (lambda obj: obj.__pack__()),
+        LongLong: (lambda obj: obj.__pack__()),
+        UnsignedLongLong: (lambda obj: obj.__pack__()),
+        Float: (lambda obj: obj.__pack__()),
+        Double: (lambda obj: obj.__pack__()),
         bytes: (
-            lambda obj: struct.pack(
-                arc.format_of("str_length") + arc.format_of(bytes).format(len(obj)), len(obj), obj
-            )
+            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj)
         ),
         str: (
-            lambda obj: struct.pack(
-                arc.format_of("str_length") + arc.format_of(str).format(len(obj)),
-                len(obj),
-                obj.encode(arc.encoding),
-            )
+            lambda obj: struct.pack("i{}s".format(len(obj)), len(obj), obj.encode(arc.encoding))
+
         ),
         list: (lambda obj: b"".join([_pack(x) for x in vars(obj)])),
         set: (lambda obj: raise_(NotImplementedError)),
@@ -53,27 +62,30 @@ def generate_pack_with_architecture(
 
 
 def generate_unpack_with_architecture(
-    arc: Architecture = X86_ARCHITECTURE,
+        arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[bytes, Any], Tuple[Any, ...]]:
     unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
-        int: (
-            lambda _, data: (
-                struct.unpack(arc.format_of(int), data[: arc.size_of(int)])[0],
-                data[arc.size_of(int) :],
-            )
-        ),
+        int: (lambda obj, data: _unpack_helper(data, Int(obj))),
         bool: (
             lambda _, data: (
-                struct.unpack(arc.format_of(bool), data[: arc.size_of(bool)])[0],
-                data[arc.size_of(bool) :],
+                struct.unpack("=?", data[: 1])[0],
+                data[1:],
             )
         ),
-        float: (
-            lambda _, data: (
-                struct.unpack(arc.format_of(float), data[: arc.size_of(float)])[0],
-                data[arc.size_of(float) :],
-            )
-        ),
+        float: (lambda obj, data: _unpack_helper(data, Float(obj))),
+        Char: (lambda obj, data: obj.__unpack__(data)),
+        UnsignedChar: (lambda obj, data: obj.__unpack__(data)),
+        SignedChar: (lambda obj, data: obj.__unpack__(data)),
+        Short: (lambda obj, data: obj.__unpack__(data)),
+        UnsignedShort: (lambda obj, data: obj.__unpack__(data)),
+        Int: (lambda obj, data: obj.__unpack__(data)),
+        UnsignedInt: (lambda obj, data: obj.__unpack__(data)),
+        Long: (lambda obj, data: obj.__unpack__(data)),
+        UnsignedLong: (lambda obj, data: obj.__unpack__(data)),
+        LongLong: (lambda obj, data: obj.__unpack__(data)),
+        UnsignedLongLong: (lambda obj, data: obj.__unpack__(data)),
+        Float: (lambda obj, data: obj.__unpack__(data)),
+        Double: (lambda obj, data: obj.__unpack__(data)),
         bytes: (lambda _, data: unpack_bytes(data)),
         str: (lambda _, data: unpack_string(data)),
         list: (lambda obj, _: raise_(NotImplementedError)),
@@ -88,11 +100,11 @@ def generate_unpack_with_architecture(
 
     def unpack_bytes(data: bytes) -> (bytes, bytes):
         length = struct.unpack(
-            arc.format_of("str_length"), data[: arc.size_of("str_length")]
+            "i", data[: 4]
         )[0]
-        data = data[arc.size_of("str_length"):]
+        data = data[4:]
         return (
-            struct.unpack(arc.format_of(bytes).format(length), data[:length])[0],
+            struct.unpack("{}s".format(length), data[:length])[0],
             data[length:],
         )
 

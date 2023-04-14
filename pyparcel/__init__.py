@@ -6,4 +6,4 @@ from .api import (
     X86_ARCHITECTURE,
 )
 from .architecture import Architecture
-from .strict_type import StrictType
+from .strict_type import *

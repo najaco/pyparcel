@@ -1,29 +1,19 @@
 from typing import Any, Dict
-from .strict_type import StrictType
+from .strict_type import Int
 
 
 class Architecture:
     def __init__(
         self,
-        sint: StrictType = StrictType.INT,
-        sbool: StrictType = StrictType.BOOL,
-        sfloat: StrictType = StrictType.FLOAT,
-        sstr: StrictType = StrictType.CHAR_ARR,
-        sbytes: StrictType = StrictType.CHAR_ARR,
-        str_length: StrictType = StrictType.INT,
+        str_length: type = Int,
         encoding: str = "utf-8",
     ):
-        self._data: Dict[Any, StrictType] = {
-            int: sint,
-            bool: sbool,
-            float: sfloat,
-            str: sstr,
-            bytes: sbytes,
+        self._data: Dict[Any, type] = {
             "str_length": str_length,
         }
         self.encoding = encoding
 
-    def __getitem__(self, key: Any) -> StrictType:
+    def __getitem__(self, key: Any) -> type:
         if key not in self._data:
             raise IndexError
         return self._data[key]
@@ -31,9 +21,9 @@ class Architecture:
     def size_of(self, key: Any) -> int:
         if key not in self._data:
             raise IndexError
-        return self._data[key].value.size
+        return self._data[key].STANDARD_SIZE
 
     def format_of(self, key: Any) -> str:
         if key not in self._data:
             raise IndexError
-        return self._data[key].value.format
+        return self._data[key].FORMAT
