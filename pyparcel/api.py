@@ -60,7 +60,7 @@ def generate_pack_with_architecture(
         if not all(type(i) == type(li[0]) for i in li):  # asserts that all items in list are of same type
             raise Exception("All items in list must be of same type to pack.")
         return b"".join([_pack(i) for i in [len(li)] + li])
-
+        
     def _pack(*objs: Any) -> bytes:
         return b"".join(
             [
@@ -102,7 +102,7 @@ def generate_unpack_with_architecture(
         Double: (lambda obj, data: obj.__unpack__(data)),
         bytes: (lambda _, data: unpack_bytes(data)),
         str: (lambda _, data: unpack_string(data)),
-        list: (lambda obj, _: raise_(NotImplementedError)),
+        list: (lambda obj, data: unpack_list(data, obj)),
         set: (lambda obj, _: raise_(NotImplementedError)),
         dict: (lambda obj, _: raise_(NotImplementedError)),
         tuple: (lambda obj, data: unpack_tuple(data, obj)),
@@ -128,6 +128,18 @@ def generate_unpack_with_architecture(
             (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
         return tuple(unpacked_objs), data
+
+    def unpack_list(data: bytes, t: List[T]) -> (List[T], bytes):
+        length = struct.unpack(
+            "i", data[: 4]
+        )[0]
+        data = data[4:]
+        obj_shell = t[0]
+        t.pop()
+        for i in range(0, length):
+            (result, data) = _unpack_helper(data, obj_shell)
+            t.append(result)
+        return t, data
 
     def _unpack_helper(data: bytes, obj: T) -> (T, bytes):
         if type(obj) in unpack_dict:
