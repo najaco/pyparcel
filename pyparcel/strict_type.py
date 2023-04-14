@@ -1,11 +1,11 @@
 import struct
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any, TypeVar
 
 T = TypeVar("T")
 
 
-class StrictType(metaclass=ABCMeta):
+class StrictType(ABC):
     """
     Abstract class for StrictType. Defines standard ``__pack__`` and ``__unpack__`` functions.
     :cvar FORMAT: Format specifier used when packing obj
@@ -32,7 +32,7 @@ class StrictType(metaclass=ABCMeta):
         )
 
 
-class Char(str):
+class Char(str, StrictType):
     """
     Represents the strict type for a char.
     """
