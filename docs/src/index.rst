@@ -16,6 +16,7 @@ pyparcel
    :maxdepth: 2
    :caption: Contents:
    
+   api.rst
    strict_types.rst
 
 pyparcel allows you to securely and easily convert your python object to and from a byte string format. When pyparcel_ performs ``pack`` on an object, it uses
@@ -24,9 +25,9 @@ When pyparcel_ performs ``unpack`` on an data, it again performs recursive intro
 By default, ``int`` s are stored as ``"i"`` with the standard size of 4 bytes, and ``float`` s  are stored as ``"f"`` with a standard size of 4 bytes.
 If you would like to change how specific values are stored, see :ref:`strict types<strict_types>`.
 
-Example `[src] <../examples/readme_example.py>`_
+Example `[src] <../../examples/readme_example.py>`_
 ###################################################
-.. literalinclude:: ../examples/readme_example.py
+.. literalinclude:: ../../examples/readme_example.py
     :language: python
     :lines: 1, 15-19
 
