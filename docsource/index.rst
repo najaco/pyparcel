@@ -37,7 +37,7 @@ Comparison to other modules
 Comparison to pickle_
 -------------------------
 While pickle_ is great for *convenience*, it also lacks *security* because it allows the execution of *arbitrary functions*.
-pyparcel_ is different the user knows what objects are expected when unpacking the byte string. pyparcel_ recursively introspects the passed object and fills
+pyparcel_ is different because the user knows what objects are expected when unpacking the byte string. pyparcel_ recursively introspects the passed object and fills
 the instance variables with what was given in the byte string.
 
 Comparison to struct_
