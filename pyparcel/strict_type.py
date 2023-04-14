@@ -1,6 +1,4 @@
 import struct
-from enum import Enum
-from collections import namedtuple
 
 
 class Char(str):
@@ -17,16 +15,16 @@ class Char(str):
         super(str, Char).__init__(c)
 
     def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self)
+        return struct.pack(self.FORMAT, self.encode('ascii'))
 
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
+            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0].decode('ascii'),
             data[self.STANDARD_SIZE:],
         )
 
 
-class UnsignedChar(str):
+class UnsignedChar(int):
     """
     Represents the strict type for an unsigned char.
     """
@@ -34,10 +32,9 @@ class UnsignedChar(str):
     FORMAT: str = "B"
     STANDARD_SIZE: int = 1
 
-    def __init__(self, c: str = "\0"):
-        if len(c) != 1:
-            raise Exception("UnsignedChar may only take arguments of length 1")
-        super(str, UnsignedChar).__init__(c)
+    def __init__(self, c: int = 0):
+        # Check range of unsigned char
+        super(int, UnsignedChar).__init__(c)
 
     def __pack__(self) -> bytes:
         return struct.pack(self.FORMAT, self)
@@ -49,7 +46,7 @@ class UnsignedChar(str):
         )
 
 
-class SignedChar(str):
+class SignedChar(int):
     """
     Represents the strict type for a signed char.
     """
@@ -57,10 +54,9 @@ class SignedChar(str):
     FORMAT: str = "b"
     STANDARD_SIZE: int = 1
 
-    def __init__(self, c: str = "\0"):
-        if len(c) != 1:
-            raise Exception("SignedChar may only take arguments of length 1")
-        super(str, SignedChar).__init__(c)
+    def __init__(self, c: int = 0):
+        # Check range of Signed Char
+        super(int, SignedChar).__init__(c)
 
     def __pack__(self) -> bytes:
         return struct.pack(self.FORMAT, self)
@@ -70,26 +66,6 @@ class SignedChar(str):
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
             data[self.STANDARD_SIZE:],
         )
-
-# class Bool(bool):
-#     """
-#     Represents the strict type for an boolean.
-#     """
-#
-#     FORMAT: str = "?"
-#     STANDARD_SIZE: int = 1
-#
-#     def __init__(self, b: bool = False):
-#         super(bool, Bool).__init__(b)
-#
-#     def __pack__(self) -> bytes:
-#         return struct.pack(self.FORMAT, self)
-#
-#     def __unpack__(self, data: bytes) -> (float, bytes):
-#         return (
-#             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-#             data[self.STANDARD_SIZE:],
-#         )
 
 
 class Short(int):
