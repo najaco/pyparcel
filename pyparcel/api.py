@@ -1,5 +1,5 @@
 import struct
-from typing import TypeVar, Tuple, Any, Callable
+from typing import TypeVar, Tuple, Any, Callable, Dict, List
 
 from .architecture import Architecture
 
@@ -16,7 +16,7 @@ X86_ARCHITECTURE: Architecture = Architecture()
 def generate_pack_with_architecture(
     arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[Any], bytes]:
-    pack_dict = {
+    pack_dict: Dict[type, Callable[[Any], bytes]] = {
         int: (lambda obj: struct.pack(arc.format_of(int), obj)),
         bool: (lambda obj: struct.pack(arc.format_of(bool), obj)),
         float: (lambda obj: struct.pack(arc.format_of(float), obj)),
@@ -55,7 +55,7 @@ def generate_pack_with_architecture(
 def generate_unpack_with_architecture(
     arc: Architecture = X86_ARCHITECTURE,
 ) -> Callable[[bytes, Any], Tuple[Any, ...]]:
-    unpack_dict = {
+    unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
         int: (
             lambda _, data: (
                 struct.unpack("i", data[: arc.size_of(int)])[0],
@@ -97,7 +97,7 @@ def generate_unpack_with_architecture(
         )
 
     def unpack_tuple(data: bytes, t: Tuple[Any]) -> (Tuple[Any], bytes):
-        unpacked_objs = []
+        unpacked_objs: List[Any] = []
         for obj in t:
             (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
@@ -118,7 +118,7 @@ def generate_unpack_with_architecture(
         if len(objs) == 1:
             return _unpack_helper(data, objs[0])[0]
         else:
-            unpacked_objs = []
+            unpacked_objs: List[Any] = []
             for obj in objs:
                 (result, data) = _unpack_helper(data, obj)
                 unpacked_objs.append(result)
