@@ -194,6 +194,10 @@ def unpack(data: bytes, *objs: Any, encoding: str = "utf-8") -> Tuple[Any]:
     else:
         unpacked_objs: List[Any] = []
         for obj in objs:
+            if len(data) == 0:
+                raise Exception("Data did not match objects.")
             (result, data) = _unpack_helper(data, obj)
             unpacked_objs.append(result)
+        if len(data) != 0:
+            raise Exception(f"Data did not match objects.")
         return tuple(unpacked_objs)
