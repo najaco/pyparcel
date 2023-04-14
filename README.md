@@ -6,10 +6,14 @@ pyparcel is a Python library to easily perform conversions between Python values
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pyparcel:
 
 ```bash
 pip install pyparcel
+```
+or using [pipenv](https://pipenv.pypa.io/en/latest/):
+```bash
+pipenv install pyparcel
 ```
 
 ## Usage
