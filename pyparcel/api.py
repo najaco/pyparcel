@@ -22,12 +22,12 @@ def generate_pack_with_architecture(
         float: (lambda obj: struct.pack(arc.format_of(float), obj)),
         bytes: (
             lambda obj: struct.pack(
-                "i" + arc.format_of(bytes).format(len(obj)), len(obj), obj
+                arc.format_of("str_length") + arc.format_of(bytes).format(len(obj)), len(obj), obj
             )
         ),
         str: (
             lambda obj: struct.pack(
-                "i" + arc.format_of(str).format(len(obj)),
+                arc.format_of("str_length") + arc.format_of(str).format(len(obj)),
                 len(obj),
                 obj.encode(arc.encoding),
             )
@@ -58,19 +58,19 @@ def generate_unpack_with_architecture(
     unpack_dict: Dict[type, Callable[[T, bytes], T]] = {
         int: (
             lambda _, data: (
-                struct.unpack("i", data[: arc.size_of(int)])[0],
+                struct.unpack(arc.format_of(int), data[: arc.size_of(int)])[0],
                 data[arc.size_of(int) :],
             )
         ),
         bool: (
             lambda _, data: (
-                struct.unpack("?", data[: arc.size_of(bool)])[0],
+                struct.unpack(arc.format_of(bool), data[: arc.size_of(bool)])[0],
                 data[arc.size_of(bool) :],
             )
         ),
         float: (
             lambda _, data: (
-                struct.unpack("f", data[: arc.size_of(float)])[0],
+                struct.unpack(arc.format_of(float), data[: arc.size_of(float)])[0],
                 data[arc.size_of(float) :],
             )
         ),
@@ -90,7 +90,7 @@ def generate_unpack_with_architecture(
         length = struct.unpack(
             arc.format_of("str_length"), data[: arc.size_of("str_length")]
         )[0]
-        data = data[arc.size_of("str_length") :]
+        data = data[arc.size_of("str_length"):]
         return (
             struct.unpack(arc.format_of(bytes).format(length), data[:length])[0],
             data[length:],
