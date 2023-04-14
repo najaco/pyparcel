@@ -15,12 +15,12 @@ class Char(str):
         super(str, Char).__init__(c)
 
     def __pack__(self) -> bytes:
-        return struct.pack(self.FORMAT, self.encode('ascii'))
+        return struct.pack(self.FORMAT, self.encode("ascii"))
 
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
-            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0].decode('ascii'),
-            data[self.STANDARD_SIZE:],
+            struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0].decode("ascii"),
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -33,7 +33,8 @@ class UnsignedChar(int):
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: int = 0):
-        # Check range of unsigned char
+        if not 0 <= c <= 255:
+            raise Exception("UnsignedChar must be between 0 and 255")
         super(int, UnsignedChar).__init__(c)
 
     def __pack__(self) -> bytes:
@@ -42,7 +43,7 @@ class UnsignedChar(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -55,7 +56,8 @@ class SignedChar(int):
     STANDARD_SIZE: int = 1
 
     def __init__(self, c: int = 0):
-        # Check range of Signed Char
+        if not -128 <= c <= 127:
+            raise Exception("SignedChar must be between -128 and 127")
         super(int, SignedChar).__init__(c)
 
     def __pack__(self) -> bytes:
@@ -64,7 +66,7 @@ class SignedChar(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -87,7 +89,7 @@ class Short(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -110,7 +112,7 @@ class UnsignedShort(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -133,7 +135,7 @@ class Int(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -156,7 +158,7 @@ class UnsignedInt(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -179,7 +181,7 @@ class Long(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -202,7 +204,7 @@ class UnsignedLong(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -225,7 +227,7 @@ class LongLong(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -250,7 +252,7 @@ class UnsignedLongLong(int):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -271,7 +273,7 @@ class Float(float):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
 
 
@@ -292,5 +294,5 @@ class Double(float):
     def __unpack__(self, data: bytes) -> (float, bytes):
         return (
             struct.unpack(self.FORMAT, data[: self.STANDARD_SIZE])[0],
-            data[self.STANDARD_SIZE:],
+            data[self.STANDARD_SIZE :],
         )
