@@ -1,5 +1,7 @@
 # pyparcel
 
+[![Build Status](https://travis-ci.org/najaco/pyparcel.svg?branch=master)](https://travis-ci.org/najaco/pyparcel)
+
 pyparcel is a Python library to easily perform conversions between Python values and C structs represesented as Python [`bytes`](https://docs.python.org/3/library/stdtypes.html#bytes) objects. pyparcel extends the usage of [`struct`](https://docs.python.org/3/library/struct.html) and provides a simpler way to pack classes.
 
 ## Installation
