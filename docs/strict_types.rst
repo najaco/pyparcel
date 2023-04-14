@@ -1,3 +1,5 @@
+.. _strict_types:
+
 Strict Types
 =============
 
@@ -36,7 +38,6 @@ Example
 Classes
 ########
 .. autoclass:: Char
-
 .. autoclass:: UnsignedChar
 .. autoclass:: SignedChar
 .. autoclass:: Short
