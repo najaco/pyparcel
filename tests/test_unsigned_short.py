@@ -112,13 +112,13 @@ DATA: List[int] = [
 class TestStrictUnsignedShort(unittest.TestCase):
     def test_pack(self):
         for i in DATA:
-            self.assertEqual(pyparcel.pack(UnsignedShort(i)), struct.pack("=H", i))
+            self.assertEqual(pyparcel.load(UnsignedShort(i)), struct.pack("=H", i))
 
     def test_pack_unpack(self):
         for i in DATA:
             self.assertEqual(
                 UnsignedShort(i),
-                pyparcel.unpack(pyparcel.pack(UnsignedShort(i)), UnsignedShort()),
+                pyparcel.unload(pyparcel.load(UnsignedShort(i)), UnsignedShort()),
             )
 
 

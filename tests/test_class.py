@@ -36,10 +36,10 @@ DATA: List[ExampleClassA] = [
 
 
 class TestClass(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for o in DATA:
             self.assertEqual(
-                pyparcel.pack(o),
+                pyparcel.load(o),
                 struct.pack(
                     "=ifi{}s".format(len(o.c.encode("utf-8"))),
                     o.a,
@@ -49,9 +49,9 @@ class TestClass(unittest.TestCase):
                 ),
             )
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for o in DATA:
-            self.assertEqual(o, pyparcel.unpack(pyparcel.pack(o), ExampleClassA()))
+            self.assertEqual(o, pyparcel.unload(pyparcel.load(o), ExampleClassA()))
 
 
 if __name__ == "__main__":

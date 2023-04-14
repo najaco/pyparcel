@@ -29,47 +29,49 @@ FAKE_ENCODINGS: List[str] = [
     "utf-17",
     "Hello World",
     "ASCI",
-    "a" * 100
+    "a" * 100,
 ]
 
 
 class TestString(unittest.TestCase):
-    def test_pack(self):
+    def test_load(self):
         for i in DATA:
             self.assertEqual(
-                pyparcel.pack(i),
+                pyparcel.load(i),
                 struct.pack("=i{}s".format(len(i)), len(i), i.encode(ENCODING)),
             )
 
-    def test_pack_unpack(self):
+    def test_load_unload(self):
         for i in DATA:
-            self.assertEqual(i, pyparcel.unpack(pyparcel.pack(i), str()))
+            self.assertEqual(i, pyparcel.unload(pyparcel.load(i), str()))
 
-    def test_pack_with_encodings(self):
+    def test_load_with_encodings(self):
         for s in DATA:
             for e in ENCODINGS:
                 self.assertEqual(
-                    pyparcel.pack(s, encoding=e),
+                    pyparcel.load(s, encoding=e),
                     struct.pack(
                         "=i{}s".format(len(s.encode(e))), len(s.encode(e)), s.encode(e)
                     ),
                     f"Failed with obj = {s} and encoding = {e}",
                 )
 
-    def test_pack_unpack_with_encodings(self):
+    def test_load_unload_with_encodings(self):
         for s in DATA:
             for e in ENCODINGS:
                 self.assertEqual(
-                    s, pyparcel.unpack(pyparcel.pack(s, encoding=e), str(), encoding=e)
+                    s, pyparcel.unload(pyparcel.load(s, encoding=e), str(), encoding=e)
                 )
 
-    def test_pack_invalid_encoding_throws_exception(self):
+    def test_load_invalid_encoding_throws_exception(self):
         for e in FAKE_ENCODINGS:
-            self.assertRaises(Exception, pyparcel.pack, DATA[6], encoding=e)
+            self.assertRaises(Exception, pyparcel.load, DATA[6], encoding=e)
 
-    def test_unpack_invalid_encoding_throws_exception(self):
+    def test_unload_invalid_encoding_throws_exception(self):
         for e in FAKE_ENCODINGS:
-            self.assertRaises(Exception, pyparcel.unpack, pyparcel.pack(DATA[6]), str(), encoding=e)
+            self.assertRaises(
+                Exception, pyparcel.unload, pyparcel.load(DATA[6]), str(), encoding=e
+            )
 
 
 if __name__ == "__main__":
